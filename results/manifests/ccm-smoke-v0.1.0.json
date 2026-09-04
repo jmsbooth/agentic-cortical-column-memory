@@ -47,8 +47,8 @@
   },
   "configuration_hash": "c12f9cca6530c6ebcf5bebe5c9eb069d10f532dc43f1c27f59ff86b0a2aba7a6",
   "experiment_id": "ccm-smoke-v0.1.0",
-  "generated_at": "2026-09-03T22:34:35.486842+00:00",
-  "git_commit": "8a9ce2102428ae2807781ab5cb02373dc9df2d09",
+  "generated_at": "2026-09-04T17:26:22.938608+00:00",
+  "git_commit": "795e2ff9dc957593d6e7a70f2458b38d50fa568d",
   "hardware": {
     "platform": "macOS-26.3.1-arm64-arm-64bit-Mach-O",
     "processor": "arm",
