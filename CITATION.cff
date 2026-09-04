@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+title: "Cortical-Column Memory: A Thousand-Brains-Inspired Memory and Consensus Architecture for Resource-Constrained Multi-Agent Systems"
+message: "If you use this research artifact, please cite the v0.1.0 protocol release."
+type: software
+authors:
+  - family-names: Booth
+    given-names: James
+    affiliation: Independent researcher
+version: 0.1.0
+date-released: 2026-09-03
+repository-code: "https://github.com/jmsbooth/agentic-cortical-column-memory"
+license: MIT
+abstract: >-
+  A systems architecture and preregistered evaluation protocol for explicit
+  modular memory, navigable reference frames, distributed hypotheses, active
+  evidence gathering, and structured consensus in resource-constrained
+  multi-agent systems. The release contains a dependency-free reference
+  implementation and deterministic validation harness; the registered campaign
+  is pending.
+keywords:
+  - multi-agent systems
+  - agent memory
+  - test-time compute
+  - reproducibility
+  - reference frames
+  - consensus

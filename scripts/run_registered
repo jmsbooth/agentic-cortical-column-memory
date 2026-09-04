@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+python3 -m experiments.runners.run \
+  --config preregistration/registered-configs/ccm-v0.1.0.json \
+  --output-dir results/raw

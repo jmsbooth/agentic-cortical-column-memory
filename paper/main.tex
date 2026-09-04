@@ -1,0 +1,45 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,array,longtable,tabularx,graphicx,xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,shapes.geometric}
+\usepackage{hyperref}
+\usepackage[numbers,sort&compress]{natbib}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.65\baselineskip}
+\newcommand{\ccmname}{Cortical-Column Memory (CCM)}
+\newcommand{\releaseversion}{v0.1.0}
+\newcommand{\statusline}{Architecture and Preregistered Evaluation Protocol}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue,pdftitle={Cortical-Column Memory}}
+
+\title{Cortical-Column Memory: A Thousand-Brains-Inspired Memory and Consensus Architecture for Resource-Constrained Multi-Agent Systems\\[0.4em]
+\large System Design, Implementation, and Preregistered Evaluation Protocol}
+\author{James Booth\\Independent researcher\\\url{https://github.com/jmsbooth/agentic-cortical-column-memory}}
+\date{September 3, 2026\\\small \releaseversion{} · \statusline{} · Preprint, not peer reviewed}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Resource-constrained deployments cannot always purchase larger models, longer context, or unconstrained inference. This paper proposes \ccmname{}, an engineering architecture that tests whether modular state surrounding a small model can recover selected capabilities associated with model scale. CCM translates four ideas associated with the Thousand Brains literature into explicit software contracts: navigable reference frames, local column models, provenance-bearing structured memory, and active evidence gathering coordinated by structured hypothesis consensus. The translation is an architectural hypothesis, not a claim of biological realism or cortical equivalence. This \releaseversion{} release publishes the reference implementation, deterministic synthetic task environments, baselines, component ablations, resource accounting, statistical decision rules, and machine-readable run manifests before the registered empirical campaign is completed. It therefore exposes a falsifiable validation framework rather than reporting a completed empirical study. The registered questions distinguish architectural benefit from additional test-time computation and retain abstention, unresolved disagreement, and negative findings as valid outcomes.
+\end{abstract}
+
+\textbf{Publication state.} The registered experimental campaign has not been completed. This release publishes the architecture, implementation, hypotheses, baselines, metrics, and decision criteria before final data collection. The only executable measurements included at release time are software smoke-test artifacts, clearly labelled as such in the repository.
+
+\input{sections/01_introduction}
+\input{sections/02_background}
+\input{sections/03_ccm}
+\input{sections/04_tpaa}
+\input{sections/05_experimental_design}
+\input{sections/06_implementation}
+\input{sections/07_results}
+\input{sections/08_discussion}
+\input{sections/09_threats_related}
+\input{sections/10_conclusion}
+\appendix
+\input{sections/appendix_preregistration}
+
+% refs.bib is the editable bibliography source. refs.bbl is checked in so the
+% bundled Tectonic path can reproduce the PDF without an external BibTeX binary.
+\input{refs.bbl}
+\end{document}

@@ -1,0 +1,5 @@
+\section{TPAA integration context}
+
+The original manuscript placed CCM ``under TPAA.'' In this release TPAA is retained as an integration context rather than placed in the title or treated as prerequisite knowledge. CCM can be evaluated as a module inside a broader multi-agent architecture with an orchestrator, tool boundary, event transport, and deployment policy. The paper's contribution remains understandable without TPAA: the testable unit is the CCM memory, reference-frame, column, active-evidence, and consensus protocol.
+
+The integration boundary is intentionally narrow. An orchestrator supplies a task, model adapter, available actions, budgets, and trace sink. A column consumes observations and peer states and emits structured state. A tool returns an observation or an explicit failure. The transport may be local function calls or a future RPC/event layer; the v0.1.0 implementation uses local calls and has no cross-service deployment claim. This keeps the validation harness focused on architecture rather than vendor or topology lock-in.

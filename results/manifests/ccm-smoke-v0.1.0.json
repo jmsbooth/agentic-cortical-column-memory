@@ -1,0 +1,75 @@
+{
+  "config": {
+    "budgets": {
+      "max_actions": 4,
+      "max_columns": 3,
+      "max_steps": 4,
+      "token_budget": 4096,
+      "wall_clock_ms": 30000
+    },
+    "experiment_id": "ccm-smoke-v0.1.0",
+    "model": {
+      "context_window": 4096,
+      "family": "symbolic-smoke-adapter",
+      "quantization": "not_applicable",
+      "scale_class": "small/local",
+      "temperature": 0.0,
+      "version": "toy-symbolic-v0.1.0"
+    },
+    "protocol_version": "ccm-protocol-v0.1.0",
+    "run_kind": "smoke",
+    "seeds": [
+      7
+    ],
+    "strategies": [
+      "B0",
+      "B1",
+      "B2",
+      "B3",
+      "B4",
+      "B5",
+      "CCM-Full",
+      "CCM-NoActive",
+      "CCM-NoVote"
+    ],
+    "task_classes": [
+      "persistent_memory",
+      "multi_hop_evidence",
+      "active_information",
+      "ambiguous_hypothesis",
+      "tool_use",
+      "long_horizon",
+      "conflicting_evidence",
+      "incomplete_information",
+      "pure_reasoning"
+    ],
+    "tasks_per_class": 1
+  },
+  "configuration_hash": "c12f9cca6530c6ebcf5bebe5c9eb069d10f532dc43f1c27f59ff86b0a2aba7a6",
+  "experiment_id": "ccm-smoke-v0.1.0",
+  "generated_at": "2026-09-03T22:34:35.486842+00:00",
+  "git_commit": "8a9ce2102428ae2807781ab5cb02373dc9df2d09",
+  "hardware": {
+    "platform": "macOS-26.3.1-arm64-arm-64bit-Mach-O",
+    "processor": "arm",
+    "python": "3.14.4"
+  },
+  "manifest_version": "0.1.0",
+  "model": {
+    "context_window": 4096,
+    "family": "symbolic-smoke-adapter",
+    "quantization": "not_applicable",
+    "scale_class": "small/local",
+    "temperature": 0.0,
+    "version": "toy-symbolic-v0.1.0"
+  },
+  "protocol_version": "ccm-protocol-v0.1.0",
+  "python": "3.14.4",
+  "raw_results": "results/raw/ccm-smoke-v0.1.0.jsonl",
+  "record_count": 81,
+  "seeds": [
+    7
+  ],
+  "status": "smoke_validation",
+  "task_version": "synthetic-world-v0.1.0"
+}

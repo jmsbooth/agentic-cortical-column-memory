@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+input="${1:?usage: ./scripts/analyze results/raw/<experiment>.jsonl}"
+python3 -m evaluation.reporting.analyze "$input"

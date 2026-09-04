@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+repo_root="$(cd -- "$(dirname -- "$0")/.." && pwd)"
+bundled_tectonic="/Users/jamesbooth/.codex/plugins/cache/openai-bundled/latex/0.2.6/bin/tectonic"
+if [[ -x "$bundled_tectonic" ]]; then
+  tectonic_bin="$bundled_tectonic"
+elif command -v tectonic >/dev/null 2>&1; then
+  tectonic_bin="$(command -v tectonic)"
+else
+  echo "No Tectonic binary found; install Tectonic or set CCM_TECTONIC_BIN." >&2
+  exit 1
+fi
+tectonic_bin="${CCM_TECTONIC_BIN:-$tectonic_bin}"
+mkdir -p "$repo_root/paper/build"
+cd "$repo_root/paper"
+initial_log="build/.initial-compile.log"
+rm -f "$initial_log"
+"$tectonic_bin" -X compile \
+  --keep-intermediates \
+  --outdir build \
+  --outfmt pdf \
+  --print \
+  --untrusted \
+  main.tex > "$initial_log" 2>&1
+"$tectonic_bin" -X compile \
+  --keep-intermediates \
+  --outdir build \
+  --outfmt pdf \
+  --print \
+  --untrusted \
+  main.tex
+rm -f "$initial_log"

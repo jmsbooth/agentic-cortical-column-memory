@@ -1,0 +1,42 @@
+protocol_version: ccm-protocol-v0.1.0
+unit_of_analysis: task_instance
+primary:
+  - id: task_success_rate
+    definition: committed answer equals hidden ground truth; abstention and unresolved are failures for success.
+    support: bounded_binary
+  - id: false_consensus_rate
+    definition: incorrect committed answers divided by all committed answers.
+    support: bounded_ratio
+secondary:
+  - id: expected_calibration_error
+    definition: ten-bin absolute confidence/empirical-success gap.
+  - id: abstention_rate
+    definition: abstained outcomes divided by task instances.
+  - id: unresolved_rate
+    definition: unresolved outcomes divided by task instances.
+  - id: memory_retrieval_precision
+    definition: required observations retrieved divided by all retrieved observations.
+  - id: memory_retrieval_recall
+    definition: required observations retrieved divided by required observations.
+  - id: action_efficiency
+    definition: successful tasks divided by actions taken.
+  - id: evidence_utilization_rate
+    definition: tasks where a required observation was retrieved after an action divided by tasks.
+  - id: convergence_steps
+    definition: iterations through the CCM loop before termination.
+  - id: communication_overhead
+    definition: structured state and action bytes exchanged between columns/environment.
+  - id: failure_taxonomy
+    definition: one registered failure category per unsuccessful task where classification is possible.
+resources:
+  - input_tokens
+  - output_tokens
+  - total_model_invocations
+  - wall_clock_latency_ms
+  - cpu_utilization_pct
+  - gpu_utilization_pct
+  - peak_memory_mb
+  - accelerator_seconds
+  - energy_joules
+  - api_cost_usd
+  - communication_bytes

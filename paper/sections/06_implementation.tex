@@ -1,0 +1,17 @@
+\section{Implementation}
+
+The repository is a standard-library-only Python reference implementation. The module boundary mirrors the architecture: \path{ccm/reference_frames} validates state transitions; \path{ccm/memory} owns append-only observations; \path{ccm/column} implements the column interface; \path{ccm/consensus} implements structured and baseline voting; \path{ccm/active_evidence} selects actions; \path{ccm/orchestration} runs the loop; \texttt{experiments} supplies deterministic worlds and strategies; and \texttt{evaluation} emits metrics, resource records, and reports.
+
+The model boundary is explicit. \texttt{ToyModel} is a deterministic symbolic adapter for smoke validation and unit tests. It is useful because it makes hidden truth, evidence, and failure behavior inspectable, but it is not a claim about a 3B, 7B, or frontier language model. A future adapter can implement the proposal callback while preserving the state contracts and manifest requirements.
+
+\subsection{Configuration and run identity}
+
+Experiments are configuration-driven JSON files. Configuration includes experiment and protocol IDs, seed set, task classes, model family/version/revision, quantization, temperature, context window, column count and specializations, memory representation, consensus thresholds, action and step budgets, and exclusion rules. The runner hashes the canonical JSON configuration. Every raw JSONL result references that hash, the git commit, model version, task version, hardware metadata, seed, timestamp, and complete trace. Results without a manifest are invalid for registered analysis.
+
+\subsection{Machine-readable outputs}
+
+The runner writes one JSON object per task/strategy to \path{results/raw/} and a manifest to \path{results/manifests/}. The analysis command reads raw records, computes metrics without hand-copying values into LaTeX, writes JSON and CSV summaries, and generates the table source used by the paper when an analysis artifact is requested. Smoke output is committed only to demonstrate the path; registered output is not represented as completed evidence in this release.
+
+\subsection{Security and operational limits}
+
+The harness is offline by default and has no credential path. Model outputs are untrusted data. Provenance fields distinguish external observations from model hypotheses. The implementation avoids raw sensitive payloads and private reasoning. Resource fields that cannot be measured on the host remain unavailable. A production deployment would additionally require authenticated tool boundaries, trace propagation, bounded labels, and deployment-specific access controls; those are outside this local reference implementation.

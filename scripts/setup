@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+command -v python3 >/dev/null
+python3 - <<'PY'
+import sys
+if sys.version_info < (3, 10):
+    raise SystemExit("CCM requires Python 3.10 or newer")
+print(f"CCM v0.1.0 setup OK on Python {sys.version.split()[0]}")
+PY
+python3 -m compileall -q ccm experiments evaluation

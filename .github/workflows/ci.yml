@@ -1,0 +1,33 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Compile Python modules
+        run: python -m compileall -q ccm experiments evaluation
+      - name: Run tests
+        run: python -m unittest discover -s tests -t . -v
+      - name: Run deterministic smoke test
+        run: ./scripts/run_smoke --output-dir /tmp/ccm-results
+      - name: Check generated smoke record shape
+        run: python ./scripts/check_smoke.py /tmp/ccm-results/ccm-smoke-v0.1.0.jsonl
+      - name: Check paper source references
+        run: python ./scripts/check_paper.py
+      - name: Compile paper
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: main.tex
+          working_directory: paper
+          latexmk_use_xelatex: true

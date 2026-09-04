@@ -1,0 +1,34 @@
+{
+  "experiment_id": "ccm-smoke-v0.1.0",
+  "protocol_version": "ccm-protocol-v0.1.0",
+  "run_kind": "smoke",
+  "seeds": [7],
+  "task_classes": [
+    "persistent_memory",
+    "multi_hop_evidence",
+    "active_information",
+    "ambiguous_hypothesis",
+    "tool_use",
+    "long_horizon",
+    "conflicting_evidence",
+    "incomplete_information",
+    "pure_reasoning"
+  ],
+  "tasks_per_class": 1,
+  "strategies": ["B0", "B1", "B2", "B3", "B4", "B5", "CCM-Full", "CCM-NoActive", "CCM-NoVote"],
+  "model": {
+    "family": "symbolic-smoke-adapter",
+    "version": "toy-symbolic-v0.1.0",
+    "scale_class": "small/local",
+    "quantization": "not_applicable",
+    "temperature": 0.0,
+    "context_window": 4096
+  },
+  "budgets": {
+    "max_columns": 3,
+    "max_actions": 4,
+    "max_steps": 4,
+    "token_budget": 4096,
+    "wall_clock_ms": 30000
+  }
+}

@@ -1,0 +1,41 @@
+protocol_version: ccm-protocol-v0.1.0
+status: registered-before-full-campaign
+hypotheses:
+  - id: H1
+    statement: CCM-Full will improve task success over B0 on the full task suite.
+    primary_metric: task_success_rate
+    comparison: CCM-Full_vs_B0
+    direction: higher
+  - id: H2
+    statement: CCM-Full will improve task success over B3 under comparable call and token budgets.
+    primary_metric: task_success_rate
+    comparison: CCM-Full_vs_B3_budget_controlled
+    direction: higher
+  - id: H3
+    statement: CCM-NoRF will reduce success on tasks requiring persistent state transformation.
+    primary_metric: task_success_rate
+    comparison: CCM-Full_vs_CCM-NoRF
+    subset: [persistent_memory, multi_hop_evidence, long_horizon]
+    direction: full_higher
+  - id: H4
+    statement: CCM-NoActive will reduce success on tasks requiring disambiguating evidence acquisition.
+    primary_metric: task_success_rate
+    comparison: CCM-Full_vs_CCM-NoActive
+    subset: [active_information, ambiguous_hypothesis, tool_use]
+    direction: full_higher
+  - id: H5
+    statement: Structured consensus will reduce false consensus relative to answer-level majority voting.
+    primary_metric: false_consensus_rate
+    comparison: CCM-Full_vs_B4
+    direction: full_lower
+  - id: H6
+    statement: CCM benefit will vary by task class and be smaller on pure reasoning controls than on memory/evidence tasks.
+    primary_metric: task_success_rate
+    comparison: task_class_interaction
+    direction: interaction
+
+exploratory:
+  - failure_taxonomy_by_strategy
+  - capability_resource_pareto_frontier
+  - calibration_and_abstention_quality
+  - communication_overhead

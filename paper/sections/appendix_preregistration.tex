@@ -1,0 +1,26 @@
+\section{Preregistration summary}
+
+This appendix summarizes the frozen protocol. The YAML and JSON files in \texttt{preregistration/} are authoritative for execution.
+
+\subsection{Hypotheses}
+
+\begin{longtable}{p{0.09\linewidth}p{0.78\linewidth}}
+\toprule
+ID & Registered statement \\
+\midrule
+H1 & CCM-Full improves task success over B0 on the full task suite. \\
+H2 & CCM-Full improves task success over B3 under comparable call and token budgets. \\
+H3 & Removing explicit reference frames reduces performance on persistent state transformation tasks. \\
+H4 & Removing active evidence reduces performance on disambiguation tasks. \\
+H5 & Structured consensus reduces false consensus relative to answer-level majority voting. \\
+H6 & CCM benefit varies by task class, with smaller gains on pure reasoning controls than on memory/evidence tasks. \\
+\bottomrule
+\end{longtable}
+
+\subsection{Analysis commitments}
+
+Three independent seeds and ten instances per task class are registered. Task success is binary and bounded; abstention and unresolved outcomes are failures for this metric. Confidence calibration, abstention quality, false consensus, memory precision/recall, evidence utilization, convergence steps, communication overhead, failure categories, and resources are secondary outcomes. Report raw effects, 95\% bootstrap confidence intervals, effect sizes, and practical significance; apply Holm correction across primary pairwise tests; retain timeouts and failures; perform no outlier removal or outcome-dependent stopping.
+
+\subsection{Negative-results and version policy}
+
+The registered results will be published whether the hypotheses are supported, qualified, or rejected. A component that contributes nothing will be reported. Corrections that do not alter registered elements may be v0.2.x releases with changelog entries. Changes to hypotheses, metrics, baselines, exclusions, or thresholds require a deviation record and a new protocol version. v1.0.0 requires all registered seeds, raw and processed data, generated tables and figures, matched-budget analyses, ablations, failure taxonomy, resource Pareto analysis, and evidence-based abstract/conclusion updates.

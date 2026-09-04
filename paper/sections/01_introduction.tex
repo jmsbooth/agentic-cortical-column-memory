@@ -1,0 +1,29 @@
+\section{Introduction}
+
+Large models can be unavailable or undesirable in local, private, disconnected, edge, sovereign, and low-energy deployments. Increasing parameter count is therefore not the only systems lever. A complementary possibility is to place explicit state, information acquisition, and coordination mechanisms around a smaller model. That possibility is useful only if the resulting system is evaluated against conventional inference scaling with comparable resources.
+
+This paper asks a narrow question:
+
+\begin{quote}
+Can explicit modular memory, structured reference frames, distributed hypothesis formation, active evidence gathering, and structured consensus recover capabilities that would otherwise require a larger model, and can they do so efficiently enough to matter under constrained compute, energy, latency, or deployment conditions?
+\end{quote}
+
+A second question is mandatory: does CCM outperform conventional small-model inference techniques when total inference budget is controlled? A result of the form ``multiple agents outperform one agent'' is insufficient if the multiple-agent system simply consumes more calls, tokens, wall-clock time, energy, or money.
+
+\subsection{Contributions and boundaries}
+
+The conservative contributions of this release are:
+
+\begin{enumerate}
+  \item an inspectable architecture specification for CCM;
+  \item an engineering translation of selected Thousand Brains-inspired ideas into reference frames, columns, structured memory, active evidence, and consensus contracts;
+  \item a dependency-free reference implementation with a deterministic synthetic adapter;
+  \item a preregistered evaluation matrix covering baselines, component ablations, task classes, resources, and statistical decisions; and
+  \item a reproducible validation harness that emits provenance-bearing traces and machine-readable results.
+\end{enumerate}
+
+This release does not claim empirical superiority, biological equivalence, or that a symbolic smoke adapter represents a language-model capability measurement. The future empirical release must replace protocol-state language with measured results only after the registered campaign is complete.
+
+\subsection{Research questions}
+
+RQ1 asks whether CCM improves success relative to a single small-model baseline. RQ2 asks whether any improvement survives budget-controlled comparison with conventional multi-agent inference. RQ3 asks which mechanisms account for an observed effect. RQ4 asks whether task class moderates the effect, including a pure-reasoning control where external memory should provide little benefit. RQ5 asks whether CCM produces safer coordination outcomes by reducing false consensus and preserving calibrated abstention.

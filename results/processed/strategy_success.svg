@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="332" viewBox="0 0 760 332">
+<style>text{font:12px sans-serif;fill:#222}.title{font-weight:700}.bar{fill:#3b82f6}</style>
+<text class="title" x="20" y="20">Task-success rate by strategy (generated artifact)</text>
+<text x="182" y="50" text-anchor="end">B0</text>
+<rect class="bar" x="190" y="35" width="288.89" height="16"/>
+<text x="718" y="50">0.556</text>
+<text x="182" y="74" text-anchor="end">B1</text>
+<rect class="bar" x="190" y="59" width="346.67" height="16"/>
+<text x="718" y="74">0.667</text>
+<text x="182" y="98" text-anchor="end">B2</text>
+<rect class="bar" x="190" y="83" width="346.67" height="16"/>
+<text x="718" y="98">0.667</text>
+<text x="182" y="122" text-anchor="end">B3</text>
+<rect class="bar" x="190" y="107" width="288.89" height="16"/>
+<text x="718" y="122">0.556</text>
+<text x="182" y="146" text-anchor="end">B4</text>
+<rect class="bar" x="190" y="131" width="288.89" height="16"/>
+<text x="718" y="146">0.556</text>
+<text x="182" y="170" text-anchor="end">B5</text>
+<rect class="bar" x="190" y="155" width="288.89" height="16"/>
+<text x="718" y="170">0.556</text>
+<text x="182" y="194" text-anchor="end">CCM-Full</text>
+<rect class="bar" x="190" y="179" width="404.44" height="16"/>
+<text x="718" y="194">0.778</text>
+<text x="182" y="218" text-anchor="end">CCM-NoActive</text>
+<rect class="bar" x="190" y="203" width="288.89" height="16"/>
+<text x="718" y="218">0.556</text>
+<text x="182" y="242" text-anchor="end">CCM-NoVote</text>
+<rect class="bar" x="190" y="227" width="462.22" height="16"/>
+<text x="718" y="242">0.889</text>
+<line x1="190" y1="29" x2="190" y2="312" stroke="#555"/>
+<line x1="190" y1="312" x2="710" y2="312" stroke="#555"/>
+</svg>

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+output_dir="results/raw"
+if [[ "${1:-}" == "--output-dir" ]]; then
+  output_dir="${2:?missing output directory}"
+fi
+python3 -m experiments.runners.run \
+  --config experiments/configs/smoke_v0.1.0.json \
+  --output-dir "$output_dir"

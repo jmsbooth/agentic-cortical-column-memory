@@ -1,0 +1,40 @@
+\section{Related work and threats to validity}
+
+\subsection{Related work}
+
+The Thousand Brains theory supplies the principal architectural inspiration: local models, reference-frame-relative structure, sensorimotor interaction, and distributed agreement \citep{hawkins2017columns,hawkins2019framework}. TBP/Monty provides a contemporary open implementation of a sensorimotor learning system, but its mechanisms and task domain differ from CCM \citep{clay2024tbp,leadholm2026systems}. HTM and SDR work provide a related representational lineage, not a language-agent implementation \citep{ahmad2016sdr,numenta2010htm}.
+
+Agent-memory work includes systems for long-lived context and generative agent state, such as MemGPT and Generative Agents \citep{packer2023memgpt,park2023generative}. These systems overlap with CCM in retaining state but do not by themselves define navigable frame transitions, structured peer hypotheses, or the registered active-evidence ablations. Self-consistency samples multiple reasoning paths and aggregates answers \citep{wang2022selfconsistency}; multi-agent debate exchanges arguments over rounds \citep{du2023debate}; and mixture-of-agents combines layered agent outputs \citep{wang2024moa}. These are direct baselines because their gains can arise from additional test-time computation. Test-time scaling work further motivates reporting capability/resource frontiers rather than accuracy alone \citep{snell2024scaling}.
+
+\subsection{Novelty and distinction matrix}
+
+\scriptsize
+\begin{longtable}{@{}p{0.21\linewidth}p{0.17\linewidth}p{0.17\linewidth}p{0.17\linewidth}p{0.18\linewidth}@{}}
+\toprule
+Approach & Local models & Explicit frame & Structured persistent memory & Active evidence / structured consensus \\
+\midrule
+TBT theory & conceptual & object-centric & theoretical & sensorimotor / voting-inspired \\
+TBP/Monty & modular sensorimotor & learned spatial/object state & learned model state & sensorimotor control \\
+HTM/SDR & algorithmic modules & location-related in lineage & sequence memory & not a language-agent consensus protocol \\
+Memory agents & usually one or more agents & usually implicit & context/retrieval-centric & varies \\
+Self-consistency / debate / MoA & repeated model calls & implicit & transient outputs & answer/argument aggregation \\
+CCM & explicit columns & typed navigable state & provenance-bearing observation ledger & information-gain action and frame-compatible quorum \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+The distinguishing claim is not that CCM invented memory, multiple agents, voting, or test-time compute. The testable design claim is the combination of explicit navigable state, evidence-linked distributed hypotheses, active discriminative observation, and resource-controlled ablation in a small-model deployment protocol.
+
+\subsection{Threats to validity}
+
+\begin{itemize}
+  \item \textbf{Benchmark contamination and task selection.} Synthetic tasks have known ground truth but may be easier than ecological tasks. Future external tasks must document contamination and provenance.
+  \item \textbf{Prompt and model sensitivity.} A result may depend on a prompt, base-model family, quantization, or adapter. Exact revisions and prompts must be versioned; multiple model classes are required before broad claims.
+  \item \textbf{Correlated agents.} Reusing one base model can correlate errors, so column count is not equivalent to independent evidence. The protocol records model identity and includes a no-specialization ablation.
+  \item \textbf{Test-time compute.} More columns, rounds, tokens, and tool calls can produce apparent gains. Budget-matched analyses and resource Pareto frontiers are mandatory.
+  \item \textbf{Evaluator bias.} Judge models can favor fluent consensus. Primary metrics use deterministic ground truth where possible; judge-based evaluation is secondary and disclosed.
+  \item \textbf{Hardware and energy error.} Wall-clock and utilization vary by host; unavailable energy is not estimated as measured energy. Hardware metadata and measurement status are retained.
+  \item \textbf{Tool quality and orchestration.} Active evidence can look beneficial if the tool leaks the answer or harmful if it is unreliable. Tool observations, action costs, and tool failures are logged.
+  \item \textbf{Biological correspondence.} TBT is an inspiration, not biological validation. No neuroscience claim follows from a CCM result.
+  \item \textbf{Architecture overfitting.} A task suite can reward the mechanisms it was designed to test. The pure-reasoning and conflicting-evidence controls, preregistration, and future held-out tasks limit but do not eliminate this risk.
+\end{itemize}

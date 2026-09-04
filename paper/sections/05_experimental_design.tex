@@ -1,0 +1,48 @@
+\section{Preregistered experimental design}
+
+The authoritative machine-readable registration is in \texttt{preregistration/}. The full registered configuration is \texttt{preregistration/registered-configs/ccm-v0.1.0.json}; the smoke configuration is separate and is not a substitute for the campaign.
+
+\subsection{Baselines and ablations}
+
+\scriptsize
+\begin{longtable}{@{}p{0.18\linewidth}p{0.72\linewidth}@{}}
+\toprule
+ID & Definition \\
+\midrule
+B0 & One small model, direct inference. \\
+B1 & One small model with equivalent additional context/memory. \\
+B2 & Self-consistency over independent samples. \\
+B3 & Conventional multi-agent system using the same small model without aggregation. \\
+B4 & Conventional multi-agent system with answer-level majority vote. \\
+B5 & Answer-level confidence-weighted aggregation. \\
+CCM-Full & Explicit frames, structured memory, distributed hypotheses, active evidence, structured consensus, specialization. \\
+CCM-NoRF & Remove explicit reference-frame constraints. \\
+CCM-NoActive & Remove active evidence acquisition. \\
+CCM-NoVote & Commit from one highest-confidence column without structured consensus. \\
+CCM-NoStructuredMemory & Disable append-only structured retrieval. \\
+CCM-NoSpecialization & Use a shared specialization. \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+The goal is explanatory ablation, not merely a leaderboard. Every strategy sees the same task instances and reports the resources it actually consumes.
+
+\subsection{Task classes}
+
+The deterministic suite includes persistent memory, multi-hop evidence integration, active information acquisition, ambiguous hypothesis resolution, tool use, long-horizon execution, conflicting evidence, incomplete information, and pure reasoning. The last class is a control: the protocol does not presume that memory or coordination can substitute for intrinsic reasoning capability. Each task has a hidden answer, candidate hypotheses, an explicit reference frame, optional observations/actions, and a stable versioned task identifier.
+
+\subsection{Compute and resource control}
+
+Every task record includes input tokens, output tokens, total model invocations, wall-clock latency, communication bytes, and fields for CPU utilization, GPU utilization, peak memory, accelerator time, energy, and hosted API cost. Unavailable measurements are recorded as \texttt{null} with a note, not imputed. The analysis reports both an unconstrained capability view and budget-controlled comparisons across approximately equal token, call, wall-clock, dollar, and measurable energy budgets. The principal secondary output is a capability/resource Pareto frontier. A gain that disappears under matching resource budgets is not credited as architecture-only improvement.
+
+The full campaign is designed to compare multiple model classes when hardware and licensing permit: an approximately 3--4B local model, an approximately 7--9B local model, a larger open model, and a hosted frontier reference. Model revisions, quantization, prompts, runtime, and hardware must be recorded. v0.1.0 does not download or redistribute any model.
+
+\subsection{Statistics and decision rules}
+
+The unit of analysis is a task instance, paired by task identifier and seed where possible. The registered configuration uses three independent seeds and ten task instances per class. Report raw effects, 95\% percentile bootstrap confidence intervals with 10,000 resamples, and effect sizes. Use paired success-rate differences for binary task success and paired standardized mean differences for continuous measures. Holm correction is applied across the five primary pairwise comparisons. A minimum practically meaningful effect is 0.05 absolute task-success rate. Bounded metrics are not assumed to be normally distributed.
+
+Failures and timeouts remain in the task-success denominator. Invalid manifests or missing traces invalidate a run and are reported rather than silently dropped. No outlier removal or data-dependent stopping is permitted. Exploratory failure distributions, Pareto frontiers, and interactions are labelled exploratory.
+
+\subsection{Failure taxonomy and provenance}
+
+The harness classifies unsuccessful outcomes where possible as base-model knowledge failure, retrieval failure, reference-frame localization failure, incorrect state transformation, memory contamination, evidence-selection failure, hypothesis-generation failure, consensus failure, premature convergence, overconfidence, tool failure, orchestration failure, context exhaustion, or compute-budget exhaustion. A completed task record retains the prompt, structured column states, observations, memory operations, actions, hypotheses, votes, final result, metric inputs, failure class, and resource record. It does not require private chain-of-thought.

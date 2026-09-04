@@ -1,0 +1,75 @@
+\begin{thebibliography}{11}
+
+\bibitem[Ahmad and Hawkins(2016)]{ahmad2016sdr}
+Subutai Ahmad and Jeff Hawkins.
+\newblock How do neurons operate on sparse distributed representations? A mathematical theory of sparsity, neurons, and semantic memory.
+\newblock \emph{arXiv preprint arXiv:1601.00720}, 2016.
+\newblock \url{https://arxiv.org/abs/1601.00720}.
+
+\bibitem[Clay et~al.(2024)Clay, Leadholm, and Hawkins]{clay2024tbp}
+Viviane Clay, Niels Leadholm, and Jeff Hawkins.
+\newblock The Thousand Brains Project: A new paradigm for sensorimotor intelligence.
+\newblock \emph{arXiv preprint arXiv:2412.18354}, 2024.
+\newblock \url{https://arxiv.org/abs/2412.18354}.
+
+\bibitem[Du et~al.(2023)Du, Li, Torralba, Tenenbaum, and Mordatch]{du2023debate}
+Yilun Du, Shuang Li, Antonio Torralba, Joshua B. Tenenbaum, and Igor Mordatch.
+\newblock Improving factuality and reasoning in language models through multiagent debate.
+\newblock \emph{arXiv preprint arXiv:2305.14325}, 2023.
+\newblock \url{https://arxiv.org/abs/2305.14325}.
+
+\bibitem[Hawkins and Ahmad(2010)]{numenta2010htm}
+Jeff Hawkins and Subutai Ahmad.
+\newblock Hierarchical temporal memory including HTM cortical learning algorithms.
+\newblock Numenta technical report, 2010.
+\newblock \url{https://www.numenta.com/assets/pdf/whitepapers/hierarchical-temporal-memory-cortical-learning-algorithm-0.2.1-en.pdf}.
+
+\bibitem[Hawkins et~al.(2017)Hawkins, Ahmad, and Cui]{hawkins2017columns}
+Jeff Hawkins, Subutai Ahmad, and Yuwei Cui.
+\newblock A theory of how columns in the neocortex enable learning the structure of the world.
+\newblock \emph{Frontiers in Neural Circuits}, 11:81, 2017.
+\newblock \url{https://doi.org/10.3389/fncir.2017.00081}.
+
+\bibitem[Hawkins et~al.(2019)Hawkins, Lewis, Klukas, Purdy, and Ahmad]{hawkins2019framework}
+Jeff Hawkins, Marcus Lewis, Mirko Klukas, Scott Purdy, and Subutai Ahmad.
+\newblock A framework for intelligence and cortical function based on grid cells in the neocortex.
+\newblock \emph{Frontiers in Neural Circuits}, 12:121, 2019.
+\newblock \url{https://doi.org/10.3389/fncir.2018.00121}.
+
+\bibitem[Leadholm et~al.(2026)Leadholm, Clay, Knudstrup, Lee, and Hawkins]{leadholm2026systems}
+Niels Leadholm, Viviane Clay, Scott Knudstrup, Hojae Lee, and Jeff Hawkins.
+\newblock Thousand-brains systems: Sensorimotor intelligence for rapid, robust learning and inference.
+\newblock \emph{Neural Computation}, 38(6):845--896, 2026.
+\newblock \url{https://doi.org/10.1162/NECO.a.1508}.
+
+\bibitem[Packer et~al.(2023)Packer, Fang, Bothmann, Xu, Ammanamanchi, Gonzalez, Salakhutdinov, and Gonzalez]{packer2023memgpt}
+Charles Packer, Vivian Fang, Shishir Bothmann, Lin Xu, P. S. Ammanamanchi, Juan Gonzalez, Ruslan Salakhutdinov, and Joseph E. Gonzalez.
+\newblock MemGPT: Towards LLMs as operating systems.
+\newblock \emph{arXiv preprint arXiv:2310.08560}, 2023.
+\newblock \url{https://arxiv.org/abs/2310.08560}.
+
+\bibitem[Park et~al.(2023)Park, O'Brien, Cai, Morris, Liang, and Bernstein]{park2023generative}
+Joon Sung Park, Joseph O'Brien, Carrie J. Cai, Meredith Morris, Percy Liang, and Michael S. Bernstein.
+\newblock Generative agents: Interactive simulacra of human behavior.
+\newblock In \emph{Proceedings of the 36th Annual ACM Symposium on User Interface Software and Technology}, 2023.
+\newblock \url{https://doi.org/10.1145/3586183.3606763}.
+
+\bibitem[Snell et~al.(2024)Snell, Lee, Xu, and Kumar]{snell2024scaling}
+Charlie Snell, Jaehoon Lee, Kelvin Xu, and Aviral Kumar.
+\newblock Scaling LLM test-time compute optimally can be more effective than scaling model parameters.
+\newblock \emph{arXiv preprint arXiv:2408.03314}, 2024.
+\newblock \url{https://arxiv.org/abs/2408.03314}.
+
+\bibitem[Wang et~al.(2023)Wang, Wei, Schuurmans, Le, Chi, Narang, Chowdhery, and Zhou]{wang2022selfconsistency}
+Xuezhi Wang, Jason Wei, Dale Schuurmans, Quoc Le, Ed Chi, Sharan Narang, Aakanksha Chowdhery, and Denny Zhou.
+\newblock Self-consistency improves chain of thought reasoning in language models.
+\newblock In \emph{International Conference on Learning Representations}, 2023.
+\newblock \url{https://arxiv.org/abs/2203.11171}.
+
+\bibitem[Wang et~al.(2024)Wang, Wang, Athiwaratkun, Zhang, and Zou]{wang2024moa}
+Junlin Wang, Jue Wang, Ben Athiwaratkun, Ce Zhang, and James Zou.
+\newblock Mixture-of-agents enhances large language model capabilities.
+\newblock \emph{arXiv preprint arXiv:2406.04692}, 2024.
+\newblock \url{https://arxiv.org/abs/2406.04692}.
+
+\end{thebibliography}
