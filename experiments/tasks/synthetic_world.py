@@ -12,18 +12,30 @@ from typing import Iterable
 
 from ccm.schemas.models import EvidenceAction, Hypothesis, Observation, ReferenceFrame, Transition
 
-TASK_VERSION = "synthetic-world-v0.1.0"
+TASK_VERSION = "synthetic-memory-world-v0.1.0"
 TASK_CLASSES = (
-    "persistent_memory",
-    "multi_hop_evidence",
-    "active_information",
-    "ambiguous_hypothesis",
-    "tool_use",
-    "long_horizon",
+    "persistent_factual_recall",
+    "temporal_state",
+    "relational_recall",
     "conflicting_evidence",
+    "state_supersession",
+    "provenance_recall",
+    "cross_frame_integration",
+    "distractor_resistance",
+    "long_horizon_continuity",
+    "active_evidence",
     "incomplete_information",
     "pure_reasoning",
 )
+
+LEGACY_TASK_CLASS_ALIASES = {
+    "persistent_memory": "persistent_factual_recall",
+    "multi_hop_evidence": "relational_recall",
+    "active_information": "active_evidence",
+    "ambiguous_hypothesis": "active_evidence",
+    "long_horizon": "long_horizon_continuity",
+    "tool_use": "active_evidence",
+}
 
 
 @dataclass(frozen=True)
@@ -76,18 +88,29 @@ def _observation(
     location: str,
     sequence: int,
     *relations: str,
+    observed_at: str | None = None,
+    recorded_at: str | None = None,
+    valid_from: str | None = None,
+    valid_to: str | None = None,
+    superseded_by: str | None = None,
+    source: str = "environment:synthetic-v0.1.0",
 ) -> Observation:
     return Observation(
         object_id=f"{task_id}:obs:{suffix}",
         content=content,
         frame_id=frame_id,
         location=location,
-        source="environment:synthetic-v0.1.0",
+        source=source,
         sequence=sequence,
         confidence=1.0,
         provenance=f"synthetic-world:{task_id}",
         validation_state="validated",
         relations=tuple(relations),
+        observed_at=observed_at,
+        recorded_at=recorded_at,
+        valid_from=valid_from,
+        valid_to=valid_to,
+        superseded_by=superseded_by,
     )
 
 
@@ -121,10 +144,11 @@ def _action(
 
 
 def make_task(task_class: str, ordinal: int, seed: int) -> SyntheticTask:
+    task_class = LEGACY_TASK_CLASS_ALIASES.get(task_class, task_class)
     if task_class not in TASK_CLASSES:
         raise ValueError(f"unknown task class: {task_class}")
     task_id = f"{task_class}:{seed}:{ordinal:03d}"
-    frame = _frame(task_id, "conceptual-workspace" if task_class != "tool_use" else "tool-state")
+    frame = _frame(task_id, "conceptual-workspace")
     answer = "amber" if (seed + ordinal) % 2 == 0 else "indigo"
     alternative = "violet" if answer == "amber" else "ochre"
     initial: tuple[Observation, ...] = ()
@@ -132,30 +156,62 @@ def make_task(task_class: str, ordinal: int, seed: int) -> SyntheticTask:
     required: tuple[str, ...] = ()
     prompt = f"Resolve the hidden state for {task_class.replace('_', ' ')} task {ordinal}."
 
-    if task_class == "persistent_memory":
+    if task_class == "persistent_factual_recall":
         initial = (
             _observation(task_id, "archive", "An archived record identifies the keyed value.", frame.frame_id, "origin", 0, f"supports={answer}"),
         )
         required = (initial[0].object_id,)
-    elif task_class == "multi_hop_evidence":
+    elif task_class == "temporal_state":
+        initial = (
+            _observation(
+                task_id, "historical", "The device was assigned to the former owner.",
+                frame.frame_id, "origin", 0, f"supports={alternative}",
+                observed_at="2026-01-01T09:00:00Z", valid_from="2026-01-01T09:00:00Z",
+                valid_to="2026-02-01T09:00:00Z",
+            ),
+            _observation(
+                task_id, "current", "The device is assigned to the current owner.",
+                frame.frame_id, "origin", 1, f"supports={answer}",
+                observed_at="2026-02-01T09:00:00Z", valid_from="2026-02-01T09:00:00Z",
+            ),
+        )
+        required = (initial[1].object_id,)
+    elif task_class == "relational_recall":
         initial = (
             _observation(task_id, "fact-a", "The first relation points to an intermediate state.", frame.frame_id, "origin", 0, "supports=intermediate"),
             _observation(task_id, "fact-b", "The second relation maps the intermediate state to the answer.", frame.frame_id, "inspection", 1, f"supports={answer}"),
         )
         required = tuple(item.object_id for item in initial)
-    elif task_class == "active_information":
+    elif task_class == "state_supersession":
+        old_id = f"{task_id}:obs:old-state"
+        current_id = f"{task_id}:obs:current-state"
+        initial = (
+            _observation(task_id, "old-state", "The resource had the previous status.", frame.frame_id, "origin", 0, f"supports={alternative}", superseded_by=current_id),
+            _observation(task_id, "current-state", "The resource has the replacement status.", frame.frame_id, "origin", 1, f"supports={answer}", observed_at="2026-03-01T09:00:00Z"),
+        )
+        required = (current_id,)
+    elif task_class == "provenance_recall":
+        initial = (
+            _observation(task_id, "ticket", "The incident ticket records the keyed value.", frame.frame_id, "origin", 0, f"supports={answer}", source="incident-ticket:INC-19"),
+        )
+        required = (initial[0].object_id,)
+    elif task_class == "cross_frame_integration":
+        initial = (
+            _observation(task_id, "actor", "The actor relation identifies the intermediate state.", frame.frame_id, "origin", 0, "supports=intermediate", "frame=actor"),
+            _observation(task_id, "resource", "The resource relation resolves the answer.", frame.frame_id, "inspection", 1, f"supports={answer}", "frame=resource"),
+        )
+        required = tuple(item.object_id for item in initial)
+    elif task_class == "distractor_resistance":
+        initial = (
+            _observation(task_id, "signal", "The relevant record identifies the keyed value.", frame.frame_id, "origin", 0, f"supports={answer}"),
+            _observation(task_id, "distractor-a", "An unrelated record shares vocabulary but is not relevant.", frame.frame_id, "origin", 1),
+            _observation(task_id, "distractor-b", "Another unrelated record should be rejected.", frame.frame_id, "origin", 2),
+        )
+        required = (initial[0].object_id,)
+    elif task_class == "active_evidence":
         actions = (_action(task_id, "measure", frame, "Measure the unresolved attribute.", 0, 1.0, f"supports={answer}"),)
         required = (actions[0].observation.object_id,)
-    elif task_class == "ambiguous_hypothesis":
-        actions = (
-            _action(task_id, "cheap", frame, "Inspect a weakly discriminative cue.", 0, 0.2, f"supports={alternative}"),
-            _action(task_id, "decisive", frame, "Acquire the observation that separates the hypotheses.", 1, 1.0, f"supports={answer}"),
-        )
-        required = (actions[1].observation.object_id,)
-    elif task_class == "tool_use":
-        actions = (_action(task_id, "tool", frame, "Query the deterministic state tool.", 0, 1.0, f"supports={answer}"),)
-        required = (actions[0].observation.object_id,)
-    elif task_class == "long_horizon":
+    elif task_class == "long_horizon_continuity":
         actions = (
             _action(task_id, "locate", frame, "Locate the relevant state.", 0, 0.5, "supports=intermediate"),
             _action(task_id, "verify", frame, "Verify the located state.", 1, 1.0, f"supports={answer}"),

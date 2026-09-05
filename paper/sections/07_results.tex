@@ -1,7 +1,12 @@
 \section{Results status}
 
-This \releaseversion{} paper does not report a completed registered empirical result. That is a declared publication state rather than a missing table. The registered campaign is pending, and no hypothesis is labelled supported or rejected here.
+The full registered campaign has not been executed. This release therefore does not report a scientific estimate for H1--H10 and does not claim that CCM improves memory quality. The checked-in smoke artifacts are deterministic software-validation outputs used to verify task generation, schema contracts, trace completeness, resource fields, analysis, and paper-table generation.
 
-The repository does include a deterministic software smoke run. Its purpose is to verify that task generation, all requested protocol paths, manifests, provenance traces, resource records, metric generation, and generated table code execute on a clean checkout. Smoke values are not used as evidence for H1--H6 because the adapter is symbolic and intentionally exposes the task structure.
+The generated table in Table~\ref{tab:smoke-memory} is intentionally labelled smoke validation. It exposes memory-oriented fields such as recall, temporal accuracy, provenance, and context tokens; it must not be interpreted as a comparison of language-model capability. A future registered run will replace protocol-state language only after all configured seeds, task instances, baselines, ablations, matched resource views, confidence intervals, effect sizes, and failure analyses are present.
 
-The v1.0 empirical release will replace this section only after all preregistered seeds and task instances are accounted for. It must report raw and processed results, confidence intervals, effect sizes, budget-controlled comparisons, ablations, failure taxonomy, resource Pareto analysis, deviations, and negative findings. Until then, claims in this paper are limited to design decisions, implementation facts, and the registered procedure.
+\begin{table}[t]
+\centering
+\caption{Deterministic smoke-validation schema. Values are generated from the checked-in symbolic adapter and are not scientific campaign results.}
+\label{tab:smoke-memory}
+\input{tables/smoke_summary.tex}
+\end{table}

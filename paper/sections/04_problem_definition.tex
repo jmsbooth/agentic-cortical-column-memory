@@ -1,0 +1,44 @@
+\section{Problem definition and memory operations}
+
+\subsection{Agent memory problem}
+
+An agent operates over time, but its current context is not equivalent to persistent memory. Long interaction histories introduce irrelevant context, retrieval ambiguity, temporal inconsistency, repeated reconstruction, provenance loss, and context-window pressure. CCM treats memory as an explicit state-maintenance problem rather than assuming that a reasoning model can reconstruct all relevant world state from text.
+
+\subsection{Conventional memory tradeoffs}
+
+Full transcripts retain detail but consume context. Summaries reduce cost but may erase provenance and contradictions. Vector retrieval improves selectivity but does not, by itself, represent temporal validity or typed relations. Episodic and semantic stores offer stronger structure but vary in their treatment of supersession and unresolved evidence. Knowledge graphs encode valid relationships but are not automatically a record of observed instances. CCM is evaluated against these alternatives rather than dismissing them.
+
+\subsection{Formal memory objects}
+
+The conceptual schema distinguishes six object classes:
+
+\begin{description}
+  \item[Observation.] An externally acquired fact or state with identity, source, provenance, reference frame, location, sequence, confidence, validation state, observed time, recorded time, and optional validity interval. Observations are immutable.
+  \item[Relation.] A typed subject--predicate--object relationship with provenance, validity, and confidence.
+  \item[State.] The current interpreted state within a frame, derived from one or more observations. Updating state does not delete its supporting history.
+  \item[Hypothesis.] An unconfirmed candidate explanation or state. Model-generated hypotheses cannot be promoted to external observations.
+  \item[Transition.] A validated or hypothesized state change with explicit source, action, and target.
+  \item[Prediction.] An expected future observation under a hypothesis, retained separately from observed evidence.
+\end{description}
+
+\subsection{Historical and current state}
+
+Historical observations and current model state are not equivalent. If Device A is owned by User X at $T_1$ and reassigned to User Y at $T_2$, CCM retains both observations while the current interpretation resolves to User Y. The implementation represents this distinction with validity intervals and supersession metadata; a late-arriving observation is appended rather than overwriting the event history.
+
+\subsection{Recall and context assembly}
+
+The primary agent-facing operation is:
+
+\begin{verbatim}
+recall(query, current_context, budget)
+\end{verbatim}
+
+It returns a bounded memory context containing relevant current state, supporting observations, temporal context, provenance, unresolved conflicts, relevant hypotheses, confidence, and optionally recommended additional evidence. Context assembly then converts that structured result into a bounded representation for the reasoning model. The protocol measures recalled evidence coverage, provenance coverage, irrelevant-context ratio, context tokens, recall latency, and update cost.
+
+\subsection{Reconciliation}
+
+Recall does not require voting. States emitted by local models may be compatible, complementary, contradictory, unresolved, or unknown. The implementation exposes a reconciliation classifier for these outcomes. A quorum-based structured vote remains an optional downstream commit algorithm under evaluation; CCM is not defined by quorum voting.
+
+\subsection{Research boundaries}
+
+CCM is independent of TPAA and any particular agent framework, model provider, transport, or deployment topology. It can be embedded inside a single agent or instantiated independently across several agents. Thousand Brains Theory supplies architectural inspiration, not a biological implementation specification. The engineering contribution stands or falls on the memory contracts and empirical evidence reported by this protocol.

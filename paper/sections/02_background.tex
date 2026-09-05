@@ -1,15 +1,33 @@
-\section{Background and terminology}
+\section{Background and related terminology}
 
-\subsection{Thousand Brains Theory and the project implementation}
+\subsection{Thousand Brains Theory}
 
-Hawkins, Ahmad, and Cui describe a theory in which cortical columns learn models of objects and their structure relative to reference frames \citep{hawkins2017columns}. Hawkins et al. later develop a broader framework involving grid-cell-like location representations and object-centric reference frames \citep{hawkins2019framework}. These are theoretical and hypothesis-generating contributions. They are not a specification for language-model agents.
+Hawkins, Ahmad, and Cui describe a theory in which cortical columns learn models of objects and their structure relative to reference frames \citep{hawkins2017columns}. Hawkins et al. later develop a broader framework involving grid-cell-like location representations and object-centric reference frames \citep{hawkins2019framework}. These are theoretical and hypothesis-generating contributions, not specifications for language-agent memory.
 
-The Thousand Brains Project (TBP) and its Monty implementation are a separate, evolving sensorimotor learning system. Monty is an open-source Python implementation whose current documentation and repository should be cited directly when discussing its capabilities \citep{clay2024tbp,leadholm2026systems}. This paper does not reimplement Monty and does not imply that its mechanisms, TBT, HTM, and CCM are interchangeable.
+\subsection{Thousand Brains Project and Monty}
+
+The Thousand Brains Project and its Monty implementation are a separate, evolving sensorimotor learning effort \citep{clay2024tbp,leadholm2026systems}. CCM does not reimplement Monty and does not claim that TBT, TBP/Monty, HTM, SDRs, and CCM are interchangeable. The relation is one of architectural inspiration and explicit engineering separation.
 
 \subsection{HTM and sparse distributed representations}
 
-Hierarchical Temporal Memory (HTM) is an algorithmic lineage associated with sparse distributed representations (SDRs), sequence memory, and cortical-learning algorithms \citep{ahmad2016sdr,numenta2010htm}. SDRs have a precise representational meaning in that lineage: multiple active components jointly encode a value with sparse distributed activity. A conventional dense or sparse vector embedding is not automatically an SDR. The v0.1.0 CCM implementation uses structured symbolic relations and no embedding; it therefore does not claim an SDR implementation.
+Hierarchical Temporal Memory is an algorithmic lineage associated with sparse distributed representations, sequence memory, and cortical-learning algorithms \citep{ahmad2016sdr,numenta2010htm}. A dense or sparse vector embedding is not automatically an SDR. The v0.1.0 implementation uses structured symbolic relations and no SDR implementation claim.
 
-\subsection{The engineering analogy}
+\subsection{LLM memory architectures}
 
-The mapping in this paper is intentionally one-way. The inspiration suggests modular local models, object- or state-relative representation, multiple partial hypotheses, and active interaction. CCM implements those ideas as data structures and interfaces. It does not assert that the interfaces reproduce neurons, layers, grid cells, or biological learning. Where the analogy stops, the engineering contract begins.
+LLM-agent memory systems expose several useful design points. MemGPT treats memory and context as an operating-system-like resource boundary \citep{packer2023memgpt}; Generative Agents combine observations, reflection, and retrieval in an interactive simulation \citep{park2023generative}. These systems motivate persistent memory and context management, while CCM focuses on immutable provenance-bearing observations, temporal validity, bounded local models, and explicit reconciliation.
+
+\subsection{Retrieval, episodic memory, and knowledge graphs}
+
+Retrieval-augmented generation demonstrates how external retrieval can support knowledge-intensive generation \citep{lewis2020rag}. Vector retrieval is therefore a primary comparison point, but similarity alone does not specify temporal validity, current-state derivation, or contradiction handling. Knowledge graphs provide typed graph data models, query languages, and validation concepts \citep{hogan2021knowledgegraphs}; CCM is narrower, treating an ontology as optional and storing observed instances over time rather than defining an ontology itself. Episodic and semantic memory remain useful system-level categories, but the protocol compares their observable contracts rather than assuming a biological mapping.
+
+\subsection{World models and active information}
+
+World-model work shows how learned systems can maintain compressed spatial and temporal representations of an environment \citep{ha2018worldmodels}. CCM uses ``world model'' cautiously: its implementation provides state-transition and prediction contracts, but the v0.1.0 symbolic harness does not establish a learned world model. Active evidence is treated as an information-acquisition policy that selects observations when memory state is incomplete or contradictory.
+
+\subsection{Multi-agent inference and test-time computation}
+
+Self-consistency, multi-agent debate, and mixture-of-agents systems study how multiple inference traces can improve answers \citep{wang2022selfconsistency,du2023debate,wang2024moa}. Test-time compute scaling is another secondary comparison dimension \citep{snell2024scaling}. CCM retains these as exploratory composition or inference baselines. They are not the primary benchmark because the central object of this paper is persistent agent memory, not answer aggregation.
+
+\subsection{Engineering boundary}
+
+The mapping from these literatures to CCM is intentionally one-way. The cited work motivates modular state, retrieval, history, reference frames, and active interaction. CCM implements those ideas as data structures, APIs, and tests. It does not assert that the interfaces reproduce neurons, layers, grid cells, or biological learning, and its claims must ultimately be judged by its own engineering evidence.

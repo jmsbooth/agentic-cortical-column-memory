@@ -1,17 +1,26 @@
-\section{Implementation}
+\section{Reference implementation}
 
-The repository is a standard-library-only Python reference implementation. The module boundary mirrors the architecture: \path{ccm/reference_frames} validates state transitions; \path{ccm/memory} owns append-only observations; \path{ccm/column} implements the column interface; \path{ccm/consensus} implements structured and baseline voting; \path{ccm/active_evidence} selects actions; \path{ccm/orchestration} runs the loop; \texttt{experiments} supplies deterministic worlds and strategies; and \texttt{evaluation} emits metrics, resource records, and reports.
+The repository is a standard-library-only Python reference implementation. The conceptual boundaries are explicit even where the v0.1.0 directory layout remains compact:
 
-The model boundary is explicit. \texttt{ToyModel} is a deterministic symbolic adapter for smoke validation and unit tests. It is useful because it makes hidden truth, evidence, and failure behavior inspectable, but it is not a claim about a 3B, 7B, or frontier language model. A future adapter can implement the proposal callback while preserving the state contracts and manifest requirements.
+\begin{description}
+  \item[\texttt{ccm/schemas}.] Stable contracts for observations, relations, state, hypotheses, transitions, predictions, votes, actions, and column state.
+  \item[\texttt{ccm/memory}.] Append-only observation history, temporal queries, supersession, and provenance-bearing write/retrieve operations.
+  \item[\texttt{ccm/recall}.] Bounded lexical recall, current-state selection, conflict visibility, and context assembly.
+  \item[\texttt{ccm/reference\_frames}.] Valid state transitions and frame/location constraints.
+  \item[\texttt{ccm/column}.] Bounded local modeling-unit interface. A column is not an agent.
+  \item[\texttt{ccm/consensus}.] Reconciliation outcomes and optional structured quorum voting.
+  \item[\texttt{ccm/active\_evidence}.] Information-gain-per-cost action selection.
+  \item[\texttt{ccm/adapters}.] Provider-neutral model adapter contract, including an injected JSON-boundary LLM adapter with no network dependency.
+  \item[\texttt{ccm/orchestration}.] Local execution loop that records recall, context assembly, reconciliation, optional action, and explicit termination.
+  \item[\texttt{experiments} and \texttt{evaluation}.] Deterministic task worlds, M0--M6 controls, CCM ablations, manifests, memory metrics, resource accounting, and statistical utilities.
+\end{description}
 
-\subsection{Configuration and run identity}
+The symbolic \texttt{ToyModel} is intentionally deterministic and inspectable. It supports unit, invariant, integration, and smoke validation; it is not described as a language-model result. An actual model can implement the injected adapter interface while preserving the observation/provenance boundary.
 
-Experiments are configuration-driven JSON files. Configuration includes experiment and protocol IDs, seed set, task classes, model family/version/revision, quantization, temperature, context window, column count and specializations, memory representation, consensus thresholds, action and step budgets, and exclusion rules. The runner hashes the canonical JSON configuration. Every raw JSONL result references that hash, the git commit, model version, task version, hardware metadata, seed, timestamp, and complete trace. Results without a manifest are invalid for registered analysis.
+\subsection{Testing surface}
 
-\subsection{Machine-readable outputs}
+Tests cover immutable observations, duplicate handling, required provenance, hypothesis/observation separation, historical and current queries, supersession, late temporal validity, valid and invalid reference-frame transitions, and column isolation. They also cover agreement, complementary evidence, contradiction, unknown and unresolved outcomes, bounded recall, distractor rejection, multi-hop state, provenance return, bounded context assembly, deterministic task generation, manifests, and generated smoke record shape.
 
-The runner writes one JSON object per task/strategy to \path{results/raw/} and a manifest to \path{results/manifests/}. The analysis command reads raw records, computes metrics without hand-copying values into LaTeX, writes JSON and CSV summaries, and generates the table source used by the paper when an analysis artifact is requested. Smoke output is committed only to demonstrate the path; registered output is not represented as completed evidence in this release.
+\subsection{Reproducibility}
 
-\subsection{Security and operational limits}
-
-The harness is offline by default and has no credential path. Model outputs are untrusted data. Provenance fields distinguish external observations from model hypotheses. The implementation avoids raw sensitive payloads and private reasoning. Resource fields that cannot be measured on the host remain unavailable. A production deployment would additionally require authenticated tool boundaries, trace propagation, bounded labels, and deployment-specific access controls; those are outside this local reference implementation.
+Every run emits JSONL records and a manifest with configuration hash, protocol version, model and task version, seed, hardware metadata, Git commit, timestamps, resource fields, structured trace, and output path. The repository contains no hosted credentials and the smoke path has no network dependency.

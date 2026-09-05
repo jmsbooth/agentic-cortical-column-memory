@@ -35,6 +35,28 @@ class ConsensusResult:
         }
 
 
+@dataclass(frozen=True)
+class ReconciliationResult:
+    """Compatibility analysis over partial states before any vote is applied."""
+
+    status: str
+    compatible_groups: tuple[tuple[str, ...], ...]
+    complementary_ids: tuple[str, ...]
+    contradictory_ids: tuple[str, ...]
+    unresolved_ids: tuple[str, ...]
+    reason: str
+
+    def to_dict(self) -> dict[str, object]:
+        return {
+            "status": self.status,
+            "compatible_groups": [list(group) for group in self.compatible_groups],
+            "complementary_ids": list(self.complementary_ids),
+            "contradictory_ids": list(self.contradictory_ids),
+            "unresolved_ids": list(self.unresolved_ids),
+            "reason": self.reason,
+        }
+
+
 def _key(hypothesis: Hypothesis) -> tuple[str, str, str]:
     return (hypothesis.frame_id, hypothesis.location, hypothesis.claim.strip().casefold())
 
@@ -43,6 +65,62 @@ def compatible(left: Hypothesis, right: Hypothesis) -> bool:
     """Compatibility requires same frame, state, and normalized claim."""
 
     return _key(left) == _key(right)
+
+
+def reconcile_hypotheses(hypotheses: Iterable[Hypothesis]) -> ReconciliationResult:
+    """Classify local model outputs without forcing a winner.
+
+    Same-frame/location hypotheses with different claims are contradictory;
+    hypotheses in different frame locations are complementary.  Structured
+    quorum voting remains an optional downstream decision procedure.
+    """
+
+    hypotheses = tuple(hypotheses)
+    if not hypotheses:
+        return ReconciliationResult("unknown", (), (), (), (), "no derived state")
+    groups: dict[tuple[str, str, str], list[Hypothesis]] = defaultdict(list)
+    by_frame_location: dict[tuple[str, str], list[Hypothesis]] = defaultdict(list)
+    for hypothesis in hypotheses:
+        groups[_key(hypothesis)].append(hypothesis)
+        by_frame_location[(hypothesis.frame_id, hypothesis.location)].append(hypothesis)
+    compatible_groups = tuple(
+        tuple(item.hypothesis_id for item in values)
+        for values in groups.values()
+        if len(values) > 1
+    )
+    contradictory = tuple(
+        item.hypothesis_id
+        for values in by_frame_location.values()
+        if len({item.claim.strip().casefold() for item in values}) > 1
+        for item in values
+    )
+    complementary = tuple(
+        item.hypothesis_id
+        for key, values in by_frame_location.items()
+        if len(values) == 1 and len(by_frame_location) > 1
+        for item in values
+    )
+    unresolved = tuple(dict.fromkeys(contradictory))
+    if unresolved:
+        status = "contradiction"
+        reason = "same frame/location contains incompatible claims"
+    elif len(groups) == 1:
+        status = "agreement"
+        reason = "all local models describe compatible state"
+    elif complementary:
+        status = "complementary"
+        reason = "local models contribute non-overlapping state"
+    else:
+        status = "unresolved"
+        reason = "local model states require additional reconciliation"
+    return ReconciliationResult(
+        status,
+        compatible_groups,
+        complementary,
+        tuple(dict.fromkeys(contradictory)),
+        unresolved,
+        reason,
+    )
 
 
 def structured_consensus(

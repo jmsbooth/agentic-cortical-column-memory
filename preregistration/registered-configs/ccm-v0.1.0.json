@@ -4,26 +4,29 @@
   "run_kind": "registered",
   "seeds": [101, 202, 303],
   "task_classes": [
-    "persistent_memory",
-    "multi_hop_evidence",
-    "active_information",
-    "ambiguous_hypothesis",
-    "tool_use",
-    "long_horizon",
+    "persistent_factual_recall",
+    "temporal_state",
+    "relational_recall",
     "conflicting_evidence",
+    "state_supersession",
+    "provenance_recall",
+    "cross_frame_integration",
+    "distractor_resistance",
+    "long_horizon_continuity",
+    "active_evidence",
     "incomplete_information",
     "pure_reasoning"
   ],
   "tasks_per_class": 10,
   "strategies": [
-    "B0", "B1", "B2", "B3", "B4", "B5",
-    "CCM-Full", "CCM-NoRF", "CCM-NoActive", "CCM-NoVote",
-    "CCM-NoStructuredMemory", "CCM-NoSpecialization"
+    "M0", "M1", "M2", "M3", "M4", "M5", "M6",
+    "CCM-NoRF", "CCM-NoModules", "CCM-NoTemporal",
+    "CCM-NoReconciliation", "CCM-NoActive", "CCM-FlatLedger"
   ],
   "model": {
     "family": "symbolic-smoke-adapter",
     "version": "toy-symbolic-v0.1.0",
-    "scale_class": "small/local",
+    "scale_class": "model-agnostic/toy-control",
     "quantization": "not_applicable",
     "temperature": 0.0,
     "context_window": 4096,
@@ -34,12 +37,14 @@
     "specialization": ["retrieval", "state_transition", "counter_hypothesis"]
   },
   "memory": {
-    "representation": "structured_observation",
+    "representation": "observation_relation_state_hypothesis_prediction",
     "embedding": "none",
-    "immutable_history": true
+    "immutable_history": true,
+    "recall_interface": "recall(query,current_context,budget)",
+    "context_assembly": "bounded_provenance_bearing"
   },
   "consensus": {
-    "algorithm": "structured_hypothesis_quorum",
+    "algorithm": "state_reconciliation_with_optional_structured_quorum",
     "min_quorum": 2,
     "min_confidence": 0.55,
     "min_margin": 0.1,
@@ -52,7 +57,8 @@
     "max_steps": 4,
     "token_budgets": [128, 256, 512, 1024, 2048, 4096],
     "wall_clock_budgets_ms": [50, 100, 250, 500, 1000],
-    "energy_budget": "record if hardware meter is available; otherwise mark unavailable"
+    "energy_budget": "record if hardware meter is available; otherwise mark unavailable",
+    "memory_quality": ["recall_precision", "recall_recall", "temporal_accuracy", "provenance_accuracy", "relevant_context_density"]
   },
   "exclusions": {
     "invalid_manifest": true,

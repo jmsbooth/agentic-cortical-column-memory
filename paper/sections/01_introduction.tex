@@ -1,29 +1,46 @@
 \section{Introduction}
 
-Large models can be unavailable or undesirable in local, private, disconnected, edge, sovereign, and low-energy deployments. Increasing parameter count is therefore not the only systems lever. A complementary possibility is to place explicit state, information acquisition, and coordination mechanisms around a smaller model. That possibility is useful only if the resulting system is evaluated against conventional inference scaling with comparable resources.
+AI agents operate across observations, actions, and changing world state. Their current prompt is not persistent memory: a long transcript may contain irrelevant material, a summary may erase the source of a claim, similarity retrieval may mix incompatible times, and a flat episodic record may not expose relations or supersession. These failures can force a reasoning model to repeatedly reconstruct state that an agent could instead maintain explicitly.
 
-This paper asks a narrow question:
+This paper asks whether persistent agent memory should be organized primarily as multiple bounded structured models of an observed world rather than as retained text or retrieval over historical text. The proposed answer is Cortical-Column Memory (CCM), a model-agnostic memory architecture in which local modeling units maintain observations relative to reference frames, preserve temporal history and provenance, derive state and hypotheses, and reconcile partial representations into bounded recall context.
+
+\subsection{The architectural question}
+
+The central question is:
 
 \begin{quote}
-Can explicit modular memory, structured reference frames, distributed hypothesis formation, active evidence gathering, and structured consensus recover capabilities that would otherwise require a larger model, and can they do so efficiently enough to matter under constrained compute, energy, latency, or deployment conditions?
+Does structured modular world-state memory improve relevant recall, temporal consistency, relational reconstruction, provenance, and downstream agent performance compared with conventional memory architectures under matched task and resource conditions?
 \end{quote}
 
-A second question is mandatory: does CCM outperform conventional small-model inference techniques when total inference budget is controlled? A result of the form ``multiple agents outperform one agent'' is insufficient if the multiple-agent system simply consumes more calls, tokens, wall-clock time, energy, or money.
+The Thousand Brains literature motivates the design vocabulary of local models, reference-frame-relative structure, partial representations, and active interaction \citep{hawkins2017columns,hawkins2019framework}. CCM makes an engineering interpretation of selected principles. It does not claim that a software column is a cortical column, that the implementation reproduces neuroscience, or that TBT is necessary for the architecture to be useful.
 
 \subsection{Contributions and boundaries}
 
-The conservative contributions of this release are:
+The contributions of this release are:
 
 \begin{enumerate}
-  \item an inspectable architecture specification for CCM;
-  \item an engineering translation of selected Thousand Brains-inspired ideas into reference frames, columns, structured memory, active evidence, and consensus contracts;
-  \item a dependency-free reference implementation with a deterministic synthetic adapter;
-  \item a preregistered evaluation matrix covering baselines, component ablations, task classes, resources, and statistical decisions; and
-  \item a reproducible validation harness that emits provenance-bearing traces and machine-readable results.
+  \item a memory-first CCM architecture in which an agent may contain multiple bounded columns;
+  \item explicit contracts for observations, relations, state, hypotheses, transitions, predictions, reference frames, temporal validity, recall, context assembly, and reconciliation;
+  \item a dependency-free reference implementation with a deterministic symbolic adapter and a provider-neutral model adapter interface;
+  \item a preregistered evaluation matrix centered on conventional memory baselines, memory-specific tasks, memory-quality metrics, resource costs, and component ablations; and
+  \item a reproducible validation harness that emits provenance-bearing traces and machine-readable manifests without fabricated campaign results.
 \end{enumerate}
 
-This release does not claim empirical superiority, biological equivalence, or that a symbolic smoke adapter represents a language-model capability measurement. The future empirical release must replace protocol-state language with measured results only after the registered campaign is complete.
+Small-model efficiency and multi-agent composition remain useful secondary questions. A multi-agent system may place one independent CCM instance inside each agent, but CCM itself does not define that topology. Similarly, a stronger or frontier model is another model class for measuring interaction effects, not the target that CCM is expected to catch.
 
 \subsection{Research questions}
 
-RQ1 asks whether CCM improves success relative to a single small-model baseline. RQ2 asks whether any improvement survives budget-controlled comparison with conventional multi-agent inference. RQ3 asks which mechanisms account for an observed effect. RQ4 asks whether task class moderates the effect, including a pure-reasoning control where external memory should provide little benefit. RQ5 asks whether CCM produces safer coordination outcomes by reducing false consensus and preserving calibrated abstention.
+The preregistered questions are:
+
+\begin{description}
+  \item[RQ1 -- memory quality.] Does CCM improve retrieval and reconstruction of relevant historical state?
+  \item[RQ2 -- state consistency.] Does CCM improve temporal, relational, and provenance consistency over long interactions?
+  \item[RQ3 -- reference frames.] Do explicit reference frames add value beyond structured memory without frame constraints?
+  \item[RQ4 -- modular models.] Do bounded local models reduce irrelevant-memory contamination relative to a flat store?
+  \item[RQ5 -- active acquisition.] Does active evidence acquisition resolve incomplete or contradictory state?
+  \item[RQ6 -- resources.] What storage, latency, context, compute, and coordination overhead does CCM introduce?
+  \item[RQ7 -- model scale.] Does the relative benefit vary across model capability classes?
+  \item[RQ8 -- composition.] Exploratorily, can independent CCM-equipped agents exchange bounded memory-derived state without shared global memory?
+\end{description}
+
+The release is therefore a technical research artifact and preregistered protocol. The full campaign is pending, and all checked-in smoke measurements are software validation rather than evidence for these hypotheses.

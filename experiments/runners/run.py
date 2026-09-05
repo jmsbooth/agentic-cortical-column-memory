@@ -41,6 +41,14 @@ def _record(task: Any, strategy: str, trace: dict[str, Any], usage: Any, config:
     evidence_ids = []
     for vote in trace.get("votes", []):
         evidence_ids.extend(vote.get("hypothesis", {}).get("evidence_ids", []))
+    recall_blocks = trace.get("recall", [])
+    if isinstance(recall_blocks, dict):
+        recall_blocks = []
+    recalled_provenance = {
+        provenance
+        for block in recall_blocks
+        for provenance in block.get("context", {}).get("provenance", [])
+    }
     record = {
         "experiment_id": config["experiment_id"],
         "protocol_version": config["protocol_version"],
@@ -64,6 +72,9 @@ def _record(task: Any, strategy: str, trace: dict[str, Any], usage: Any, config:
         "required_observation_ids": required_ids,
         "retrieved_observation_ids": retrieved_ids,
         "required_observation_retrieved": bool(set(required_ids) & set(retrieved_ids)),
+        "provenance_recalled": bool(recalled_provenance),
+        "recalled_provenance": sorted(recalled_provenance),
+        "context_tokens_produced": usage.context_tokens_produced,
         "evidence_ids": sorted(set(evidence_ids)),
         "steps": trace.get("steps", 0),
         "failure_category": None,

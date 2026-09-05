@@ -99,6 +99,28 @@ def summarize_records(records: Iterable[dict[str, Any]]) -> dict[str, Any]:
             "expected_calibration_error": _calibration(items),
             "memory_retrieval_precision": round(relevant_retrieved / retrieved, 6) if retrieved else None,
             "memory_retrieval_recall": round(relevant_retrieved / required, 6) if required else None,
+            "recall_precision": round(relevant_retrieved / retrieved, 6) if retrieved else None,
+            "recall_recall": round(relevant_retrieved / required, 6) if required else None,
+            "state_reconstruction_accuracy": round(successes / len(items), 6) if items else 0.0,
+            "temporal_accuracy": _subset_success(items, "temporal_state"),
+            "relation_accuracy": _subset_success(items, "relational_recall") or _subset_success(items, "cross_frame_integration"),
+            "provenance_accuracy": round(
+                sum(1 for item in items if item.get("provenance_recalled")) / len(items), 6
+            ) if items else 0.0,
+            "contradiction_preservation": _contradiction_preservation(items),
+            "false_memory_rate": round(
+                sum(1 for item in items if item.get("task_class") == "incomplete_information" and item.get("final_status") == "committed") / len(items), 6
+            ) if items else 0.0,
+            "unsupported_memory_rate": round(
+                sum(1 for item in items if item.get("task_class") not in {"pure_reasoning", "incomplete_information"} and not item.get("evidence_ids")) / len(items), 6
+            ) if items else 0.0,
+            "stale_state_rate": round(
+                sum(1 for item in items if item.get("task_class") == "temporal_state" and not item.get("task_success")) / len(items), 6
+            ) if items else 0.0,
+            "mean_context_tokens": round(mean(item.get("resources", {}).get("context_tokens_produced", 0) for item in items), 6) if items else 0.0,
+            "mean_bytes_stored": round(mean(item.get("resources", {}).get("bytes_stored", 0) for item in items), 6) if items else 0.0,
+            "mean_recall_candidates": round(mean(item.get("resources", {}).get("recall_candidates_examined", 0) for item in items), 6) if items else 0.0,
+            "mean_retrieval_latency_ms": round(mean(item.get("resources", {}).get("retrieval_wall_ms", 0.0) for item in items), 6) if items else 0.0,
             "action_efficiency": round(useful_actions / actions, 6) if actions else None,
             "evidence_utilization_rate": round(useful_actions / len(items), 6) if items else 0.0,
             "mean_convergence_steps": round(mean(item.get("steps", 0) for item in items), 6) if items else 0.0,
@@ -108,3 +130,22 @@ def summarize_records(records: Iterable[dict[str, Any]]) -> dict[str, Any]:
             "failure_taxonomy": dict(sorted(categories.items())),
         }
     return {"record_count": len(records), "strategies": summaries}
+
+
+def _subset_success(records: list[dict[str, Any]], task_class: str) -> float | None:
+    subset = [item for item in records if item.get("task_class") == task_class]
+    if not subset:
+        return None
+    return round(sum(1 for item in subset if item.get("task_success")) / len(subset), 6)
+
+
+def _contradiction_preservation(records: list[dict[str, Any]]) -> float | None:
+    subset = [item for item in records if item.get("task_class") == "conflicting_evidence"]
+    if not subset:
+        return None
+    preserved = sum(
+        1 for item in subset
+        if item.get("final_status") in {"abstained", "unresolved"}
+        or item.get("trace", {}).get("reconciliation", {}).get("status") == "contradiction"
+    )
+    return round(preserved / len(subset), 6)

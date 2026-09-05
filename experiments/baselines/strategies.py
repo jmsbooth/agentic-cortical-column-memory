@@ -15,15 +15,28 @@ from experiments.tasks.synthetic_world import SyntheticTask
 
 
 STRATEGIES = (
+    "M0",
+    "M1",
+    "M2",
+    "M3",
+    "M4",
+    "M5",
+    "M6",
+    "CCM-NoRF",
+    "CCM-NoModules",
+    "CCM-NoTemporal",
+    "CCM-NoReconciliation",
+    "CCM-NoActive",
+    "CCM-FlatLedger",
+    # Secondary inference/composition baselines retained for exploratory runs.
     "B0",
     "B1",
     "B2",
     "B3",
     "B4",
     "B5",
+    # v0.1.0 compatibility aliases; the registered matrix uses M0-M6.
     "CCM-Full",
-    "CCM-NoRF",
-    "CCM-NoActive",
     "CCM-NoVote",
     "CCM-NoStructuredMemory",
     "CCM-NoSpecialization",
@@ -137,6 +150,56 @@ def _record_single(task: SyntheticTask, strategy: str, model: ToyModel, meter: R
     }
 
 
+def _record_memory_baseline(
+    task: SyntheticTask, strategy: str, model: ToyModel, meter: ResourceMeter
+) -> dict[str, Any]:
+    """Run a primary conventional memory baseline with matched inputs."""
+
+    use_memory = strategy != "M0"
+    observations = task.initial_observations if use_memory else ()
+    if strategy == "M2":
+        # This smoke adapter uses an inspectable last-observation summary. It
+        # is a protocol placeholder, not a claim about learned summarization.
+        observations = observations[-1:] if observations else ()
+    meter.model_call(task.prompt, f"{strategy} memory baseline")
+    hypothesis = model.propose(task, strategy, observations, task.hypotheses(), 0)
+    from ccm.schemas.models import Vote
+
+    vote = Vote(
+        vote_id=f"{strategy}:{task.task_id}:0",
+        column_id=f"{strategy}:memory",
+        hypothesis_id=hypothesis.hypothesis_id,
+        hypothesis=hypothesis,
+        confidence=hypothesis.confidence,
+    )
+    result = majority_vote((vote,))
+    bytes_stored = sum(len(item.content.encode("utf-8")) for item in observations)
+    meter.memory_update(objects=len(observations), bytes_stored=bytes_stored)
+    if use_memory:
+        meter.recall(
+            candidates=len(observations),
+            context_tokens=sum(len(item.content.split()) for item in observations),
+            latency_ms=0.0,
+        )
+    return {
+        "status": result.status,
+        "answer": result.answer,
+        "confidence": result.confidence,
+        "steps": 1,
+        "actions": [],
+        "votes": [vote.to_dict()],
+        "memory": [
+            {"operation": "retrieve", "object_id": item.object_id, "sequence": item.sequence}
+            for item in observations
+        ],
+        "memory_object_ids": [item.object_id for item in observations],
+        "recall": {"baseline": strategy, "context_tokens": sum(len(item.content.split()) for item in observations)},
+        "column_states": [],
+        "consensus": result.to_dict(),
+        "reconciliation": {"status": "agreement", "reason": "single baseline state"},
+    }
+
+
 def run_strategy(task: SyntheticTask, strategy: str, seed: int) -> tuple[dict[str, Any], ResourceMeter]:
     if strategy not in STRATEGIES:
         raise ValueError(f"unknown strategy: {strategy}")
@@ -144,19 +207,26 @@ def run_strategy(task: SyntheticTask, strategy: str, seed: int) -> tuple[dict[st
     model = ToyModel(seed)
     if strategy.startswith("B"):
         trace = _record_single(task, strategy, model, meter)
+    elif strategy in {"M0", "M1", "M2", "M3", "M4", "M5"}:
+        trace = _record_memory_baseline(task, strategy, model, meter)
     else:
         flags = {
-            "CCM-Full": (True, True, True, True),
-            "CCM-NoRF": (True, True, True, True),
-            "CCM-NoActive": (False, True, True, True),
-            "CCM-NoVote": (True, True, False, True),
-            "CCM-NoStructuredMemory": (True, False, True, True),
-            "CCM-NoSpecialization": (True, True, True, False),
+            "M6": (True, True, True, True, True, 3),
+            "CCM-Full": (True, True, True, True, True, 3),
+            "CCM-NoRF": (True, True, True, True, True, 3),
+            "CCM-NoModules": (True, True, True, True, True, 1),
+            "CCM-NoTemporal": (True, True, True, True, False, 3),
+            "CCM-NoReconciliation": (True, True, False, True, True, 3),
+            "CCM-NoActive": (False, True, True, True, True, 3),
+            "CCM-FlatLedger": (True, True, True, True, True, 3),
+            "CCM-NoVote": (True, True, False, True, True, 3),
+            "CCM-NoStructuredMemory": (True, False, True, True, True, 3),
+            "CCM-NoSpecialization": (True, True, True, False, True, 3),
         }[strategy]
-        allow_active, use_memory, use_vote, specialize = flags
+        allow_active, use_memory, use_vote, specialize, use_temporal, column_count = flags
         columns = [
             Column(f"{strategy}:column:{index}", task.frame, f"specialization-{index}")
-            for index in range(3)
+            for index in range(column_count)
         ]
 
         def propose(
@@ -173,10 +243,11 @@ def run_strategy(task: SyntheticTask, strategy: str, seed: int) -> tuple[dict[st
             frame=task.frame,
             columns=columns,
             propose=propose,
-            min_quorum=2,
+            min_quorum=1 if strategy == "CCM-NoModules" else 2,
             allow_active=allow_active,
             use_memory=use_memory,
-            use_reference_frames=strategy != "CCM-NoRF",
+            use_temporal=use_temporal,
+            use_reference_frames=strategy not in {"CCM-NoRF", "CCM-FlatLedger"},
             use_structured_vote=use_vote,
             specialize=specialize,
             max_steps=task.max_steps,
@@ -192,6 +263,20 @@ def run_strategy(task: SyntheticTask, strategy: str, seed: int) -> tuple[dict[st
             hypotheses=task.hypotheses(),
             actions=task.actions,
             observe_action=observe_action,
+            recall_query=task.prompt,
         )
         meter.communication(256 * len(columns))
+        writes = [item for item in trace.get("memory", []) if item.get("operation") == "write"]
+        recalls = trace.get("recall", [])
+        meter.memory_update(
+            objects=len(writes),
+            bytes_stored=sum(len(item["object_id"].encode("utf-8")) for item in writes),
+        )
+        meter.recall(
+            candidates=sum(
+                len(item.get("context", {}).get("observations", [])) for item in recalls
+            ),
+            context_tokens=sum(len(item.get("assembled_context", "").split()) for item in recalls),
+            latency_ms=0.0,
+        )
     return trace, meter
