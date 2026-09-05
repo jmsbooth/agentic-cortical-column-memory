@@ -1,63 +1,77 @@
 \section{CCM architecture}
 
-\subsection{System overview}
+\subsection{Agent-internal architecture}
 
-Figure~\ref{fig:ccm-architecture} is the canonical architecture. A task or environment supplies observations and available actions to an orchestrator. Each column has a local model, one reference-frame state, local observations, candidate hypotheses, and a specialization label. Columns exchange structured states rather than private chain-of-thought. An append-only memory records observations with provenance. Consensus either commits a compatible hypothesis, abstains on low confidence, or remains unresolved. If the evidence is insufficient and an action is available, the active policy chooses a discriminative observation and the loop continues.
+The canonical relationship is shown in Figure~\ref{fig:ccm-architecture}. A CCM column is not an agent. An agent contains its reasoning model, instructions, planning, tools, working context, and optionally one CCM instance composed of multiple bounded columns. CCM returns bounded memory context to the reasoning model; it does not replace the agent's reasoning loop.
 
 \begin{figure}[t]
 \centering
-\begin{tikzpicture}[scale=0.52, transform shape,
-  node distance=7mm and 10mm,
-  box/.style={draw, rounded corners, align=center, minimum height=9mm, minimum width=25mm, fill=gray!8},
-  state/.style={draw, rounded corners, align=center, minimum height=11mm, minimum width=31mm, fill=blue!8},
-  decision/.style={draw, diamond, aspect=2, align=center, fill=orange!15},
+\begin{tikzpicture}[
+  node distance=7mm and 11mm,
+  box/.style={draw, rounded corners, align=center, minimum height=9mm, minimum width=30mm, fill=gray!8},
+  state/.style={draw, rounded corners, align=center, minimum height=12mm, minimum width=42mm, fill=blue!8},
   link/.style={-{Latex[length=2mm]}, thick}
 ]
-\node[box] (task) {Task / environment};
-\node[state, right=of task] (orch) {Orchestrator\\budget and trace};
-\node[box, above right=of orch] (c1) {Column 1\\local model + frame};
-\node[box, right=of orch] (c2) {Column 2\\local model + frame};
-\node[box, below right=of orch] (c3) {Column 3\\local model + frame};
-\node[state, right=25mm of c2] (mem) {Structured\\append-only memory};
-\node[state, above=of mem] (hyp) {Distributed\\hypotheses and votes};
-\node[decision, right=of mem] (vote) {compatible\\quorum?};
-\node[box, below right=of vote] (active) {Disambiguating\\action / tool};
-\node[box, above right=of vote] (out) {Commit, abstain,\\or unresolved};
-\draw[link] (task) -- (orch);
-\draw[link] (orch) -- (c1);
-\draw[link] (orch) -- (c2);
-\draw[link] (orch) -- (c3);
-\draw[link] (c1) -- (mem);
-\draw[link] (c2) -- (mem);
-\draw[link] (c3) -- (mem);
-\draw[link] (c1) -- (hyp);
-\draw[link] (c2) -- (hyp);
-\draw[link] (c3) -- (hyp);
-\draw[link] (hyp) -- (vote);
-\draw[link] (mem) -- (vote);
-\draw[link] (vote) -- node[above, sloped] {yes} (out);
-\draw[link] (vote) -- node[below, sloped] {no / insufficient evidence} (active);
-\draw[link] (active) -| (task);
+\node[box] (env) {Environment / user / tools};
+\node[box, right=of env] (reason) {Reasoning model\\planning + working context};
+\node[state, below=of reason] (ccm) {CCM\\recall, update, reconcile};
+\node[box, right=of ccm, minimum width=32mm] (columns) {Column A\\Column B\\Column C\\$\ldots$};
+\node[draw, dashed, rounded corners, fit=(reason)(ccm)(columns), inner sep=6mm] (agent) {};
+\node[above=1mm of agent.north] {Agent};
+\draw[link] (env) -- (reason);
+\draw[link] (reason) -- (ccm);
+\draw[link] (ccm) -- (columns);
+\draw[link] (ccm.west) to[out=180,in=270] (reason.south);
 \end{tikzpicture}
-\caption{CCM architecture. The arrows represent explicit state and observation contracts; the diagram does not imply biological correspondence.}
+\caption{Canonical CCM relationship. Columns are bounded memory/modeling units inside an agent, not autonomous agents.}
 \label{fig:ccm-architecture}
 \end{figure}
 
-\subsection{Reference frames as computation}
+The default conceptual mode is shared-model: all columns may call the same parent-agent model while maintaining distinct local state. A provider-neutral adapter also permits heterogeneous models. The architecture is independently usable by a single agent and does not require a multi-agent orchestrator or TPAA.
 
-A CCM reference frame is not a persona, topic, namespace, domain, or agent perspective. It is a navigable state space
+\subsection{Multi-agent composition}
+
+Multi-agent composition is a separate architectural extension, not the identity of CCM. Figure~\ref{fig:multi-agent} shows one possible topology in which each agent owns an independent memory instance and exchanges only bounded, provenance-bearing state through an outer coordination layer.
+
+\begin{figure}[t]
+\centering
+\resizebox{0.98\linewidth}{!}{%
+\begin{tikzpicture}[
+  node distance=12mm and 14mm,
+  box/.style={draw, rounded corners, align=center, minimum height=10mm, minimum width=38mm, fill=gray!8},
+  state/.style={draw, rounded corners, align=center, minimum height=11mm, minimum width=35mm, fill=blue!8},
+  link/.style={-{Latex[length=2mm]}, thick}
+]
+\node[state] (orch) {Optional orchestrator\\coordination policy};
+\node[box, below left=of orch] (a) {Agent A\\Reasoning model + CCM A};
+\node[box, below=of orch] (b) {Agent B\\Reasoning model + CCM B};
+\node[box, below right=of orch] (c) {Agent C\\Reasoning model + CCM C};
+\draw[link] (orch) -- (a);
+\draw[link] (orch) -- (b);
+\draw[link] (orch) -- (c);
+\draw[link, <->, dashed] (a) -- (b);
+\draw[link, <->, dashed] (b) -- (c);
+\end{tikzpicture}
+}%
+\caption{Secondary multi-agent composition.\\CCM does not require this topology or shared global memory.}
+\label{fig:multi-agent}
+\end{figure}
+
+\subsection{Reference frames}
+
+A CCM reference frame answers: relative to what structured context does an observation have meaning? Formally,
 \[
-  F=(f, k, o, s, T, O),
+  F=(f,k,o,s,T,O),
 \]
-where $f$ is a stable identity, $k$ is the frame kind, $o$ is the origin, $s$ is the current state, $T$ is a set of validated transitions, and $O$ maps locations to observation identifiers. A transition $(a,s_i,s_j)\in T$ is valid only when the current state is $s_i$; an observation is attachable only when its frame and location are valid.
+where $f$ is a stable identity, $k$ is a frame class, $o$ is the origin, $s$ is the current state, $T$ is a set of validated transitions, and $O$ maps locations to observation identifiers. A transition $(a,s_i,s_j)\in T$ is valid only when the current state is $s_i$; an observation is attachable only when its frame and location are valid.
 
-The first concrete example is spatial/object-like. A sensor observes a mug feature at object-local location \texttt{handle\_left}; action \texttt{rotate\_90} moves the state to \texttt{handle\_top}; the frame predicts an observation at that location. The second is conceptual. A claim begins at \texttt{claim\_unresolved}; action \texttt{inspect\_source\_a} moves to \texttt{claim\_supported} when the source observation supports the claim; a competing claim remains open if the observation does not discriminate. Both examples contain a state, a transition, a predicted next location, and evidence associated with a location.
+Frames may be object-, actor-, process-, temporal-, spatial-, relational-, workflow-, or ontology-relative. They are not necessarily spatial and are not agent personas. A frame can organize a mug's object-local handle location, an incident's authorization workflow, or a temporal assignment history.
 
 \subsection{Columns}
 
-A column is a local model plus a bounded state owner. It is not merely one agent or one prompt. Its minimum state contains local observation identifiers, a reference-frame state, one or more candidate hypotheses, evidence identifiers, confidence, uncertainty, provenance, requested next action, and received peer states. Columns may share a base model or use heterogeneous models; v0.1.0 exposes specialization labels but does not claim a trained specialization.
+A column is a bounded persistent modeling unit responsible for one coherent subset or perspective of world state. It may accept observations, place them in a frame, maintain local state and relations, retain temporal history, track conflicting observations, derive hypotheses, identify missing information, and emit a bounded external representation. It need not independently operate as a full autonomous agent.
 
-The standard interface is:
+The inspectable interface is:
 
 \begin{verbatim}
 observe(observation)
@@ -65,71 +79,69 @@ update_hypotheses(candidates)
 propose_action(available_actions)
 emit_state()
 receive_peer_state(peer_state)
-vote()
+vote()                 # optional reconciliation algorithm
 commit(status)
 \end{verbatim}
 
-The interface separates local update from communication. A peer receives a serializable state, not hidden reasoning. A column can be committed, abstained, or unresolved by the orchestrator.
+The interface separates local update from communication. Peer state is serializable and bounded; hidden reasoning is not exchanged. A column can contribute to committed, abstained, unresolved, or complementary state.
 
-\subsection{CCM memory model}
+\subsection{Memory model}
 
-CCM memory is neither conversation history, a scratchpad, ordinary RAG, a vector index, nor an assertion that episodic, semantic, and procedural memory have been biologically reconstructed. It is a structured, append-only observation ledger. The v0.1.0 object schema is:
+CCM distinguishes immutable historical observations from current interpreted state. The principal object classes are Observation, Relation, State, Hypothesis, Transition, and Prediction. An observation contains stable identity, content, frame and location, source, provenance, sequence, confidence, validation state, observed time, recorded time, validity interval, optional supersession, and relations. A Relation is a typed subject--predicate--object assertion with its own provenance and validity. State is derived and replaceable; history is not.
 
-\begin{longtable}{@{}p{0.22\linewidth}p{0.69\linewidth}@{}}
-\toprule
-Field & Contract \\
-\midrule
-object\_id & Stable unique identity; duplicate writes are rejected. \\
-content & Human-readable observation payload. \\
-frame\_id, location & Reference-frame identity and state/location. \\
-source, provenance & Origin and trace link; required for every object. \\
-sequence, timestamp & Ordered run-local history; timestamps are stored at run level. \\
-confidence, validation\_state & Explicit quality and external validation status. \\
-relations & Structured relations such as support or contradiction. \\
-embedding & Optional future field; not used by the v0.1.0 symbolic adapter. \\
-\bottomrule
-\end{longtable}
+For example, an incident frame can contain the actor, session, device, credential, resource, action, time, and authorization context. The ontology, if supplied, defines valid entity and predicate types. CCM stores instances: ``Session S19 accessed Resource R4 at 14:32 using Token T7.'' A provenance-bearing recall can return the relevant state and source observation without exposing unrelated history.
 
-Historical observations cannot be silently mutated. A model-generated hypothesis is not accepted as an external observation. Conflicting observations remain separate records and are visible to consensus and the run trace.
+\subsection{Recall and context assembly}
 
-\subsection{Structured voting}
+The agent-facing interface is:
 
-A vote is a tuple containing \texttt{vote\_id}, \texttt{column\_id}, \texttt{hypothesis\_id}, \texttt{hypothesis}, and confidence. A hypothesis contains a claim, frame, location, evidence identifiers, provenance, confidence, uncertainty, and optional requested action. Two hypotheses are compatible only when their normalized claim, frame identity, and location agree. Structured consensus sums confidence within compatible groups, requires a minimum quorum and confidence, and requires a margin over the runner-up. Ties and low-confidence groups are not forced into an answer. This differs from majority voting, self-consistency, debate, confidence-weighted answer aggregation, and judge-model aggregation because the primary unit is a frame-associated hypothesis with explicit evidence.
+\begin{verbatim}
+recall(query, current_context, budget)
+\end{verbatim}
+
+The result contains relevant observations, current state, supporting IDs, temporal context, provenance, unresolved conflicts, hypotheses, confidence, and an auditable token count. Context assembly converts that result into bounded model input. The experimental harness measures recall precision, recall, provenance coverage, relevant-context density, context tokens, candidate count, retrieval latency, and update cost. CCM does not assume that raw memory is copied into the prompt.
+
+\subsection{Reconciliation rather than voting}
+
+Local states may be compatible, complementary, contradictory, unresolved, or unknown. The reconciliation operation classifies these outcomes without forcing a winner. Structured quorum voting is retained as one optional algorithm for a downstream decision. It is not required for every recall and is not the defining mechanism of CCM.
 
 \subsection{Active evidence}
 
-The active loop maintains competing hypotheses, identifies missing support, scores available actions by expected information gain divided by cost, executes one valid action, appends the resulting observation, and redistributes state. An action is not an answer and cannot create evidence without an environment response. If the action budget is exhausted, the system terminates with the best permitted non-commit outcome. The harness records action selection, returned observation, cost, and whether required evidence was retrieved.
+When recalled state is incomplete or contradictory, a column may identify a missing observation and an optional policy may select an available action by expected information gain per cost. The returned observation is validated, appended with source and provenance, and included in the next recall. An action cannot create evidence without an environment response.
 
 \subsection{Primary algorithm}
 
-Algorithm~\ref{alg:ccm} is implementation-independent pseudocode. It makes termination and disagreement explicit.
+Algorithm~\ref{alg:ccm} is implementation-independent pseudocode. It makes recall, reconciliation, temporal history, and disagreement explicit.
 
 \begin{enumerate}
-  \item Initialize $N$ columns, their reference frames, an empty append-only memory, and a run manifest.
-  \item Observe the task/environment and write only externally returned observations with source and provenance.
-  \item Each column updates local hypotheses and emits a structured state.
-  \item Exchange states and group compatible hypotheses by frame, location, and claim.
-  \item If a group satisfies quorum, confidence, and margin criteria, commit it.
-  \item Otherwise, if uncertainty remains and an action budget is available, choose the highest information-gain-per-cost action.
-  \item Execute the action, validate its returned observation, append it, and repeat from step 3.
-  \item If evidence is insufficient, confidence is below threshold, or the budget is exhausted, abstain or terminate unresolved.
+  \item Initialize an agent's bounded columns, reference frames, append-only memory, and run manifest.
+  \item Accept externally returned observations with source, provenance, sequence, and temporal metadata.
+  \item Recall a bounded context for the agent query; assemble only the required context for the reasoning model.
+  \item Each column updates local state and hypotheses, then emits a bounded structured state.
+  \item Reconcile emitted states as agreement, complementary, contradiction, unresolved, or unknown.
+  \item Optionally apply a structured quorum or another decision rule; never convert a hypothesis into an observation.
+  \item If uncertainty remains and budget permits, select and execute one evidence action, append its result, and repeat.
+  \item Otherwise return the bounded state with provenance and an explicit outcome.
 \end{enumerate}
 
 \begin{table}[t]
 \centering
-\caption{CCM termination outcomes.}
+\caption{CCM outcomes.}
 \label{alg:ccm}
 \begin{tabular}{ll}
 \toprule
-Outcome & Condition \\
+Outcome & Meaning \\
 \midrule
-Committed & Compatible structured quorum, confidence, and margin are met. \\
-Abstained & No safe commitment; aggregate confidence is below threshold. \\
-Unresolved & Competing hypotheses remain too close or lack quorum. \\
+Agreement & Local states are compatible. \\
+Complementary & Local states contribute non-overlapping information. \\
+Contradiction & Same frame/location contains incompatible claims. \\
+Unresolved & Evidence is insufficient to choose or reconcile. \\
+Unknown & No derived state is available. \\
+Committed & An optional decision rule accepts a state. \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \subsection{Invariants}
 
-The implementation and tests enforce the following invariants where feasible: every memory object has provenance; every hypothesis has a reference frame; every vote references an existing hypothesis; historical observations cannot be overwritten; disagreement is retained with its resolution mechanism; model-generated information cannot be represented as externally observed evidence; and each run has a deterministic configuration identity plus model, task, hardware, seed, and git metadata.
+The implementation and tests enforce: observations are immutable and provenance-bearing; hypotheses cannot masquerade as observations; current state never deletes history; temporal validity and supersession are explicit; columns do not silently mutate one another; contradictory and unknown outcomes remain visible; recall output is bounded and provenance-linked; and manifests record configuration, model/task versions, seed, hardware, resources, and Git commit.

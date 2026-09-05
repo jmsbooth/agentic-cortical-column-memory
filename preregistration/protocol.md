@@ -1,58 +1,81 @@
 # CCM protocol v0.1.0
 
-**Publication state:** architecture and preregistered validation framework.<br>
-**Registration state:** frozen before the full empirical campaign.<br>
-**Release:** v0.1.0 · 2026-09-03 · James Booth
+**Publication state:** architecture and preregistered evaluation framework
+**Registration state:** frozen for public v0.1.0 after this conceptual revision
+**Release:** v0.1.0 · September 2026 · James Booth · Independent researcher
+**Peer review:** not peer reviewed
+
+## Primary research question
+
+Does structured modular world-state memory improve agent memory quality and downstream task performance compared with conventional memory architectures under matched history, task, model, and resource conditions?
 
 ## Research questions
 
-1. Can explicit modular memory, navigable reference frames, distributed hypothesis formation, active evidence gathering, and structured consensus recover capabilities that would otherwise require a larger model under local resource constraints?
-2. Does CCM outperform conventional small-model inference techniques when total inference budget is controlled?
-3. Which CCM mechanisms explain any improvement, and where does the architecture fail to compensate for base-model limitations?
+1. **Memory quality:** Does CCM improve relevant-memory recall compared with conventional agent-memory architectures?
+2. **State consistency:** Does CCM improve temporal, relational, and provenance consistency across long-running interactions?
+3. **Reference frames:** Do explicit reference frames provide value beyond structured memory without frame constraints?
+4. **Modular models:** Does partitioning memory into bounded local models reduce irrelevant-memory contamination compared with a flat structured store?
+5. **Active acquisition:** Does active information acquisition resolve incomplete or contradictory memory state?
+6. **Resource efficiency:** What latency, token, storage, compute, and coordination overhead does CCM introduce?
+7. **Model-scale interaction:** Does the relative benefit vary across model capability classes?
+8. **Multi-agent composability:** Exploratory only: can independent CCM-equipped agents exchange bounded memory-derived state without a globally shared memory store?
 
-## Registered claims
-
-The hypotheses in [`hypotheses.yaml`](hypotheses.yaml) are the authoritative H1–H6 specification. No full-campaign result is claimed in v0.1.0. The negative-results policy is binding: all registered seeds and task instances are retained, and unsupported hypotheses or unhelpful components will be reported.
+Model-scale and multi-agent questions are subordinate to the memory architecture question. The deterministic adapter is a software control, not a language-model benchmark.
 
 ## System under test
 
-CCM is a software architecture, not a biological model. A column is a local model plus state. A reference frame is a navigable state space with an identity, current location/state, observations, and validated transitions. Memory is an append-only collection of structured observations. A vote references a structured hypothesis and its evidence. The active policy selects an available observation/action by expected information gain per cost. The engine may commit, abstain, or remain unresolved.
+CCM is a model-agnostic, agent-internal memory architecture. A CCM column is not an agent; one agent may contain multiple columns, and multiple agents may each contain an independent CCM instance. Columns are bounded persistent modeling units that maintain local observations, relations, state, hypotheses, predictions, and reference-frame context.
 
-The v0.1.0 executable harness uses `toy-symbolic-v0.1.0` only for deterministic software validation. A future model campaign must identify the model family, exact revision, quantization, prompt/template, runtime, and hardware in its manifest. A model-generated statement cannot be recorded as an externally observed fact.
+The memory schema distinguishes:
 
-## Baselines and ablations
+- immutable externally acquired `Observation` objects;
+- typed `Relation` objects;
+- interpreted `State` objects;
+- unconfirmed `Hypothesis` objects;
+- validated or hypothesized `Transition` objects; and
+- derived `Prediction` objects.
 
-The registered matrix is:
+Historical observations are never overwritten. Current state is derived separately and may use `valid_from`, `valid_to`, `superseded_by`, observed time, recorded time, and explicit late-arrival handling.
 
-- B0: one small model, direct inference.
-- B1: one small model with equivalent context/memory.
-- B2: self-consistency across independent samples.
-- B3: conventional multi-agent inference without aggregation.
-- B4: conventional answer-level majority vote.
-- B5: answer-level confidence-weighted aggregation.
-- CCM-Full: reference frames, structured memory, distributed hypotheses, active evidence, structured consensus, and specialization.
-- CCM-NoRF, CCM-NoActive, CCM-NoVote, CCM-NoStructuredMemory, CCM-NoSpecialization: one component removed at a time.
+The agent-facing interface is `recall(query, current_context, budget)`. It returns a bounded context containing relevant state, supporting observations, temporal context, provenance, unresolved conflicts, hypotheses, confidence, and optional evidence gaps. Reconciliation classifies local states as agreement, complementary, contradiction, unresolved, or unknown. Structured quorum voting is one optional downstream algorithm, not the definition of CCM.
 
-All strategies run on the same task instances, seeds, model adapter, and documented budgets. A capability improvement that disappears after matching call, token, latency, cost, or energy budgets is not credited as an architectural gain.
+CCM does not model cortical biology and does not claim equivalence between software modules and biological cortical columns. TPAA is not required; CCM may be embedded in TPAA or another agent framework.
+
+## Primary baselines
+
+- **M0:** no persistent memory; current task context only;
+- **M1:** full-history memory;
+- **M2:** summarized memory;
+- **M3:** vector-similarity memory;
+- **M4:** structured key/value or episodic memory;
+- **M5:** knowledge-graph memory where practical;
+- **M6:** full CCM;
+- **M7:** CCM plus an optional ontology substrate, exploratory if implemented.
+
+Registered CCM ablations are `CCM-NoRF`, `CCM-NoModules`, `CCM-NoTemporal`, `CCM-NoReconciliation`, `CCM-NoActive`, and `CCM-FlatLedger`. Majority vote, debate, self-consistency, and answer aggregation remain secondary composition/inference experiments.
 
 ## Task suite
 
-The versioned synthetic suite contains persistent memory, multi-hop evidence integration, active information acquisition, ambiguous hypothesis resolution, deterministic tool use, long-horizon state, conflicting evidence, incomplete information, and a pure reasoning control. Each task has hidden ground truth, candidate hypotheses, explicit evidence actions, and a stable task ID. External web retrieval is not part of the primary suite.
+The versioned deterministic suite contains persistent factual recall, temporal state, relational recall, conflicting evidence, state replacement/supersession, provenance recall, cross-frame integration, distractor resistance, long-horizon continuity, active evidence, incomplete information, and pure reasoning control. Every task has a stable ID, hidden answer, candidate hypotheses, provenance-bearing observations or actions, and explicit required evidence where applicable.
 
 ## Resource accounting
 
-Every task record includes input/output tokens, model invocation count, wall-clock latency, communication bytes, and fields for CPU/GPU utilization, peak memory, accelerator time, energy, and API cost. Metrics unavailable on the execution host are recorded as `null` with a measurement note. The analysis must report both unconstrained capability and budget-controlled results, including a capability/resource Pareto frontier.
+Every task record includes input/output tokens, model invocation count, wall-clock latency, communication bytes, bytes stored, object and relation counts, index size, recall candidates examined, context tokens produced, retrieval CPU/wall time, and memory-update cost. CPU/GPU utilization, accelerator time, energy, and API cost are `null` with a measurement note when unavailable.
+
+The registered analysis reports memory quality against storage, retrieval latency, context, and compute. It does not credit additional model calls as a memory improvement without matched-budget analysis.
 
 ## Statistical analysis
 
-The unit of analysis is a task instance. The registered configuration uses three independent seeds and ten instances per task class. Primary comparisons are paired by task ID and seed. Report raw differences, 95% percentile bootstrap confidence intervals using 10,000 resamples, and an effect size (paired success-rate difference; for continuous metrics, paired standardized mean difference). Use Holm correction across the five primary pairwise hypothesis tests. A minimum practically meaningful difference is 0.05 absolute task-success rate. Bounded outcomes are not assumed to be normally distributed.
+The unit of analysis is a task instance. The registered configuration uses three independent seeds and ten instances per task class. Primary comparisons are paired by task ID and seed. Report raw differences, 95% percentile bootstrap confidence intervals using 10,000 resamples, paired effect sizes, and Holm correction across the primary confirmatory tests. A minimum practically meaningful difference is 0.05 on the relevant bounded metric. Failures and timeouts remain in denominators. No silent outlier removal or outcome-dependent stopping is permitted.
 
-Failures and timeouts remain in the denominator for task success. Invalid manifests or missing traces invalidate a run rather than silently dropping a task; the invalid-run reason is reported. No outlier removal is permitted. There is no early stopping based on observed outcomes. Exploratory analyses are labelled as such and cannot modify H1–H6.
+## Negative-results policy
+
+All registered seeds, task instances, failures, contradictions, unresolved states, abstentions, and unavailable resource fields are retained. Unsupported hypotheses, neutral results, and harmful components are reportable outcomes. Smoke artifacts validate software behavior only and cannot replace the registered campaign.
 
 ## Provenance and privacy
 
-The result JSONL contains structured states and artifacts, not private chain-of-thought. Every record links to a configuration hash, git commit, model/task versions, seed, hardware, timestamp, observations, actions, hypotheses, votes, final status, and resource record. Secrets, tokens, credentials, raw sensitive payloads, and PII are out of scope and must not be added.
+Run manifests identify configuration, model/task versions, seed, hardware, timestamp, Git commit, raw output, and result hash. Structured traces are the audit surface; private chain-of-thought is neither required nor stored. Secrets, credentials, raw sensitive payloads, and PII are out of scope.
 
 ## Deviations and versions
 
-The v0.1.0 files are the frozen protocol. Corrections that do not alter hypotheses, metrics, baselines, exclusions, or thresholds may be released as v0.2.x with a changelog entry. Any change to those registered elements requires an explicit deviation record before collection and a new protocol version. A completed registered result release is v1.0.0 only after all seeds, raw data, generated tables/figures, confidence intervals, effect sizes, matched-budget comparisons, ablations, and failure analyses are present.
+This revision is the conceptual correction before public v0.1.0. After publication, material changes to hypotheses, primary metrics, task-generation logic, baselines, exclusions, or statistical thresholds require a protocol deviation note and a new protocol version. Corrections that do not alter registered methodology may use a v0.1.x release with a changelog entry.

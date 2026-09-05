@@ -4,6 +4,7 @@ __pycache__/
 .venv/
 .pytest_cache/
 .mypy_cache/
+*.DS_Store
 paper/build/*.aux
 paper/build/*.fdb_latexmk
 paper/build/*.fls

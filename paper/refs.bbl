@@ -1,4 +1,4 @@
-\begin{thebibliography}{11}
+\begin{thebibliography}{14}
 
 \bibitem[Ahmad and Hawkins(2016)]{ahmad2016sdr}
 Subutai Ahmad and Jeff Hawkins.
@@ -36,11 +36,29 @@ Jeff Hawkins, Marcus Lewis, Mirko Klukas, Scott Purdy, and Subutai Ahmad.
 \newblock \emph{Frontiers in Neural Circuits}, 12:121, 2019.
 \newblock \url{https://doi.org/10.3389/fncir.2018.00121}.
 
+\bibitem[Ha and Schmidhuber(2018)]{ha2018worldmodels}
+David Ha and Juergen Schmidhuber.
+\newblock World models.
+\newblock \emph{arXiv preprint arXiv:1803.10122}, 2018.
+\newblock \url{https://arxiv.org/abs/1803.10122}.
+
+\bibitem[Hogan et~al.(2021)Hogan, Blomqvist, Cochez, d'Amato, de Melo, Gutierrez, Kirrane, Gayo, Navigli, Neumaier, Ngonga Ngomo, Polleres, Rashid, Rula, Sequeda, Staab, and Zimmermann]{hogan2021knowledgegraphs}
+Aidan Hogan, Eva Blomqvist, Michael Cochez, Claudia d'Amato, Gerard de Melo, Claudio Gutierrez, Sabrina Kirrane, Jose Emilio Labra Gayo, Roberto Navigli, Sebastian Neumaier, Axel-Cyrille Ngonga Ngomo, Axel Polleres, Sabbir M. Rashid, Anisa Rula, Juan Sequeda, Steffen Staab, and Antoine Zimmermann.
+\newblock Knowledge graphs.
+\newblock \emph{ACM Computing Surveys}, 54(4):1--37, 2021.
+\newblock \url{https://doi.org/10.1145/3447772}.
+
 \bibitem[Leadholm et~al.(2026)Leadholm, Clay, Knudstrup, Lee, and Hawkins]{leadholm2026systems}
 Niels Leadholm, Viviane Clay, Scott Knudstrup, Hojae Lee, and Jeff Hawkins.
 \newblock Thousand-brains systems: Sensorimotor intelligence for rapid, robust learning and inference.
 \newblock \emph{Neural Computation}, 38(6):845--896, 2026.
 \newblock \url{https://doi.org/10.1162/NECO.a.1508}.
+
+\bibitem[Lewis et~al.(2020)Lewis, Perez, Piktus, Petroni, Karpukhin, Goyal, Kuettler, Lewis, Yih, Rocktaeschel, Riedel, and Kiela]{lewis2020rag}
+Patrick Lewis, Ethan Perez, Aleksandra Piktus, Fabio Petroni, Vladimir Karpukhin, Naman Goyal, Heinrich Kuettler, Mike Lewis, Wen-tau Yih, Sebastian Rocktaeschel, Sebastian Riedel, and Douwe Kiela.
+\newblock Retrieval-augmented generation for knowledge-intensive NLP tasks.
+\newblock In \emph{Advances in Neural Information Processing Systems}, 2020.
+\newblock \url{https://arxiv.org/abs/2005.11401}.
 
 \bibitem[Packer et~al.(2023)Packer, Fang, Bothmann, Xu, Ammanamanchi, Gonzalez, Salakhutdinov, and Gonzalez]{packer2023memgpt}
 Charles Packer, Vivian Fang, Shishir Bothmann, Lin Xu, P. S. Ammanamanchi, Juan Gonzalez, Ruslan Salakhutdinov, and Joseph E. Gonzalez.

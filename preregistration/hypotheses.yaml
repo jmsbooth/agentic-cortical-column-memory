@@ -1,41 +1,63 @@
 protocol_version: ccm-protocol-v0.1.0
 status: registered-before-full-campaign
-hypotheses:
+primary_hypotheses:
   - id: H1
-    statement: CCM-Full will improve task success over B0 on the full task suite.
-    primary_metric: task_success_rate
-    comparison: CCM-Full_vs_B0
+    statement: CCM will improve relevant-memory recall compared with conventional baseline memory under matched history and task conditions.
+    primary_metric: recall_recall
+    comparison: M6_vs_M1_to_M5
     direction: higher
   - id: H2
-    statement: CCM-Full will improve task success over B3 under comparable call and token budgets.
-    primary_metric: task_success_rate
-    comparison: CCM-Full_vs_B3_budget_controlled
-    direction: higher
+    statement: CCM will reduce stale or temporally incorrect state retrieval relative to non-temporal memory baselines.
+    primary_metric: stale_state_rate
+    comparison: M6_vs_M1_to_M5
+    direction: lower
   - id: H3
-    statement: CCM-NoRF will reduce success on tasks requiring persistent state transformation.
-    primary_metric: task_success_rate
-    comparison: CCM-Full_vs_CCM-NoRF
-    subset: [persistent_memory, multi_hop_evidence, long_horizon]
-    direction: full_higher
+    statement: Explicit reference frames will improve relational and state reconstruction compared with otherwise equivalent CCM without frame constraints.
+    primary_metric: state_reconstruction_accuracy
+    comparison: M6_vs_CCM-NoRF
+    direction: higher
   - id: H4
-    statement: CCM-NoActive will reduce success on tasks requiring disambiguating evidence acquisition.
-    primary_metric: task_success_rate
-    comparison: CCM-Full_vs_CCM-NoActive
-    subset: [active_information, ambiguous_hypothesis, tool_use]
-    direction: full_higher
+    statement: Modular local models will reduce irrelevant-memory contamination compared with a flat structured store.
+    primary_metric: memory_contamination_rate
+    comparison: M6_vs_CCM-FlatLedger
+    direction: lower
   - id: H5
-    statement: Structured consensus will reduce false consensus relative to answer-level majority voting.
-    primary_metric: false_consensus_rate
-    comparison: CCM-Full_vs_B4
-    direction: full_lower
+    statement: CCM will better preserve contradictory and unresolved evidence than memory systems that collapse retrieved information into a single summary.
+    primary_metric: contradiction_preservation
+    comparison: M6_vs_M2
+    direction: higher
   - id: H6
-    statement: CCM benefit will vary by task class and be smaller on pure reasoning controls than on memory/evidence tasks.
-    primary_metric: task_success_rate
-    comparison: task_class_interaction
+    statement: CCM will improve provenance accuracy compared with conventional memory baselines.
+    primary_metric: provenance_accuracy
+    comparison: M6_vs_M1_to_M5
+    direction: higher
+  - id: H7
+    statement: CCM will reduce the context presented to the reasoning model for equivalent or improved task success.
+    primary_metric: mean_context_tokens
+    comparison: M6_vs_M1
+    direction: lower
+  - id: H8
+    statement: CCM's relative benefit will vary with base-model capability.
+    primary_metric: model_scale_interaction
+    comparison: model_class_interaction
     direction: interaction
 
-exploratory:
+exploratory_hypotheses:
+  - id: H9
+    statement: Active evidence acquisition will improve resolution of incomplete-memory tasks.
+    primary_metric: state_reconstruction_accuracy
+    comparison: M6_vs_CCM-NoActive
+    subset: [active_evidence, incomplete_information]
+    direction: higher
+  - id: H10
+    statement: Multiple CCM-equipped agents can exchange bounded memory-derived state without requiring a shared global memory.
+    primary_metric: bounded_state_exchange_success
+    comparison: multi_agent_secondary_experiment
+    direction: higher
+
+exploratory_analyses:
+  - storage_latency_quality_pareto_frontier
   - failure_taxonomy_by_strategy
-  - capability_resource_pareto_frontier
   - calibration_and_abstention_quality
+  - reconciliation_outcome_distribution
   - communication_overhead

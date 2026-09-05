@@ -1,38 +1,95 @@
 protocol_version: ccm-protocol-v0.1.0
 unit_of_analysis: task_instance
 primary:
-  - id: task_success_rate
-    definition: committed answer equals hidden ground truth; abstention and unresolved are failures for success.
-    support: bounded_binary
-  - id: false_consensus_rate
-    definition: incorrect committed answers divided by all committed answers.
+  - id: recall_precision
+    definition: relevant retrieved observations divided by all retrieved observations.
     support: bounded_ratio
+  - id: recall_recall
+    definition: relevant retrieved observations divided by required observations.
+    support: bounded_ratio
+  - id: state_reconstruction_accuracy
+    definition: correctly reconstructed current or queried state divided by task instances.
+    support: bounded_binary
+  - id: temporal_accuracy
+    definition: correct historical/current state distinction on temporal-state tasks.
+    support: bounded_binary
+  - id: relation_accuracy
+    definition: correct recovery of required typed or multi-hop relations.
+    support: bounded_binary
+  - id: provenance_accuracy
+    definition: correct source/provenance returned with a recalled fact.
+    support: bounded_binary
+  - id: contradiction_preservation
+    definition: contradictory evidence remains visible or unresolved rather than being silently collapsed.
+    support: bounded_binary
+  - id: false_memory_rate
+    definition: unsupported committed memory answers divided by task instances.
+    support: bounded_ratio
+  - id: stale_state_rate
+    definition: temporal tasks returning a stale state divided by temporal task instances.
+    support: bounded_ratio
+  - id: relevant_context_density
+    definition: relevant context tokens divided by all assembled context tokens.
+    support: bounded_ratio
+
 secondary:
+  - id: task_success_rate
+    definition: committed answer equals hidden ground truth; abstention and unresolved outcomes remain failures.
+    support: bounded_binary
+  - id: unsupported_memory_rate
+    definition: memory-task records committed without supporting evidence divided by records.
+    support: bounded_ratio
+  - id: memory_contamination_rate
+    definition: irrelevant or distractor observations included in assembled context divided by recalled observations.
+    support: bounded_ratio
+  - id: mean_context_tokens
+    definition: mean tokens in bounded contexts passed to the reasoning model.
+    support: nonnegative
+  - id: retrieval_latency_ms
+    definition: wall-clock latency of recall and context assembly.
+    support: nonnegative
+  - id: update_latency_ms
+    definition: wall-clock cost of appending/updating memory state.
+    support: nonnegative
+  - id: storage_bytes
+    definition: bytes stored for memory objects and indexes.
+    support: nonnegative
+  - id: relation_count
+    definition: typed relations retained by the memory system.
+    support: nonnegative
+  - id: recall_candidates_examined
+    definition: candidates inspected by the recall operation.
+    support: nonnegative
   - id: expected_calibration_error
     definition: ten-bin absolute confidence/empirical-success gap.
+    support: bounded_nonnegative
   - id: abstention_rate
     definition: abstained outcomes divided by task instances.
+    support: bounded_ratio
   - id: unresolved_rate
     definition: unresolved outcomes divided by task instances.
-  - id: memory_retrieval_precision
-    definition: required observations retrieved divided by all retrieved observations.
-  - id: memory_retrieval_recall
-    definition: required observations retrieved divided by required observations.
-  - id: action_efficiency
-    definition: successful tasks divided by actions taken.
-  - id: evidence_utilization_rate
-    definition: tasks where a required observation was retrieved after an action divided by tasks.
-  - id: convergence_steps
-    definition: iterations through the CCM loop before termination.
+    support: bounded_ratio
   - id: communication_overhead
-    definition: structured state and action bytes exchanged between columns/environment.
+    definition: structured state and bounded memory bytes exchanged.
+    support: nonnegative
   - id: failure_taxonomy
     definition: one registered failure category per unsuccessful task where classification is possible.
+    support: categorical
+
 resources:
   - input_tokens
   - output_tokens
   - total_model_invocations
   - wall_clock_latency_ms
+  - bytes_stored
+  - memory_objects
+  - relations_stored
+  - index_size_bytes
+  - recall_candidates_examined
+  - context_tokens_produced
+  - retrieval_cpu_ms
+  - retrieval_wall_ms
+  - memory_update_cost
   - cpu_utilization_pct
   - gpu_utilization_pct
   - peak_memory_mb

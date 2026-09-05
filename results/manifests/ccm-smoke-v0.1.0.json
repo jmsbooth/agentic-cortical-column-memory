@@ -12,7 +12,7 @@
       "context_window": 4096,
       "family": "symbolic-smoke-adapter",
       "quantization": "not_applicable",
-      "scale_class": "small/local",
+      "scale_class": "toy-symbolic/control",
       "temperature": 0.0,
       "version": "toy-symbolic-v0.1.0"
     },
@@ -22,33 +22,40 @@
       7
     ],
     "strategies": [
-      "B0",
-      "B1",
-      "B2",
-      "B3",
-      "B4",
-      "B5",
-      "CCM-Full",
+      "M0",
+      "M1",
+      "M2",
+      "M3",
+      "M4",
+      "M5",
+      "M6",
+      "CCM-NoRF",
+      "CCM-NoModules",
+      "CCM-NoTemporal",
+      "CCM-NoReconciliation",
       "CCM-NoActive",
-      "CCM-NoVote"
+      "CCM-FlatLedger"
     ],
     "task_classes": [
-      "persistent_memory",
-      "multi_hop_evidence",
-      "active_information",
-      "ambiguous_hypothesis",
-      "tool_use",
-      "long_horizon",
+      "persistent_factual_recall",
+      "temporal_state",
+      "relational_recall",
       "conflicting_evidence",
+      "state_supersession",
+      "provenance_recall",
+      "cross_frame_integration",
+      "distractor_resistance",
+      "long_horizon_continuity",
+      "active_evidence",
       "incomplete_information",
       "pure_reasoning"
     ],
     "tasks_per_class": 1
   },
-  "configuration_hash": "c12f9cca6530c6ebcf5bebe5c9eb069d10f532dc43f1c27f59ff86b0a2aba7a6",
+  "configuration_hash": "3ddf242e8173fe3ac113dbdb54965512f704a508a58c5a52a3b23f2990db91d6",
   "experiment_id": "ccm-smoke-v0.1.0",
-  "generated_at": "2026-09-04T17:26:22.938608+00:00",
-  "git_commit": "795e2ff9dc957593d6e7a70f2458b38d50fa568d",
+  "generated_at": "2026-09-05T00:36:30.957230+00:00",
+  "git_commit": "fb0b5aee4265ecdd243bab6f3ee2db081efbe523",
   "hardware": {
     "platform": "macOS-26.3.1-arm64-arm-64bit-Mach-O",
     "processor": "arm",
@@ -59,17 +66,17 @@
     "context_window": 4096,
     "family": "symbolic-smoke-adapter",
     "quantization": "not_applicable",
-    "scale_class": "small/local",
+    "scale_class": "toy-symbolic/control",
     "temperature": 0.0,
     "version": "toy-symbolic-v0.1.0"
   },
   "protocol_version": "ccm-protocol-v0.1.0",
   "python": "3.14.4",
   "raw_results": "results/raw/ccm-smoke-v0.1.0.jsonl",
-  "record_count": 81,
+  "record_count": 156,
   "seeds": [
     7
   ],
   "status": "smoke_validation",
-  "task_version": "synthetic-world-v0.1.0"
+  "task_version": "synthetic-memory-world-v0.1.0"
 }
