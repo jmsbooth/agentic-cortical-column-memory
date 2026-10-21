@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 from ccm.empirical.contracts import BoundaryViolation, ModelVisibleCase
+from ccm.empirical.operations import plan_memory_writes, plan_memory_recall
 from experiments.empirical.cases import make_boundary_fixture
 
 
@@ -21,7 +22,7 @@ LEGACY_MODEL_MARKERS = ("toy", "symbolic", "smoke", "oracle")
 PROTOCOL_PATH = "preregistration/ccm-v0.2.0/PROTOCOL.md"
 LOCK_PATH = "preregistration/ccm-v0.2.0/protocol-lock.json"
 BASELINES_PATH = "experiments/empirical/baseline_registry.json"
-SOURCE_ALLOWLIST = ("ccm/empirical/contracts.py", "ccm/adapters/empirical.py")
+SOURCE_ALLOWLIST = ("ccm/empirical/contracts.py", "ccm/empirical/operations.py", "ccm/adapters/empirical.py")
 
 
 def validate_visible_source(root: Path) -> list[str]:
@@ -99,6 +100,8 @@ def assess_configuration(config: dict[str, Any], *, root: Path) -> dict[str, Any
         alternate_oracle = replace(evaluator, gold_answer="Counterfactual", accepted_answers=("Counterfactual",))
         # A counterfactual grader label cannot affect this independent case payload.
         untouched = alternate_oracle.case_id == evaluator.case_id and visible.to_json() == serialized
+        writes_before, recall_before = plan_memory_writes(visible), plan_memory_recall(visible)
+        untouched = untouched and writes_before == plan_memory_writes(visible) and recall_before == plan_memory_recall(visible)
         try:
             ModelVisibleCase.from_dict({**visible.to_dict(), "ground_truth": "canary"})
         except BoundaryViolation:
