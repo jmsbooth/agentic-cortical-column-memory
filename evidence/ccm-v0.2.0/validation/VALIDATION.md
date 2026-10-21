@@ -49,4 +49,4 @@ c8ad625f1db98f03f023f2e6b16521d4bc12f1384e5b10c4a548d391698dc7fd  preflight-smok
 8bc6fef574c3c6e5039692645a5c6cbc26a6b7608ade39596ecb8633bddbfd10  unit-invariant.log
 ```
 
-Log files with these digests exist in the local execution workspace. This report preserves their outcomes and digests, but **does not claim those logs were committed to GitHub**. Complete evidence publication remains an acceptance task in Issue #2.
+The seven original evidence files (`SHA256SUMS.txt`, manifest, and five logs) were committed to this directory after the initial draft PR. Their Git blob hashes were compared against the local ZIP extracts byte-for-byte, and all six SHA-256 manifest entries verified locally. **This closes raw targeted-evidence publication only.** The separate requirement for an exact-head complete-repository local regression run remains BLOCKED; the available logs are not that evidence.
