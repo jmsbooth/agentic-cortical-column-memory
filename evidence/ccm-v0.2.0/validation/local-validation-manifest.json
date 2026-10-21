@@ -1,0 +1,130 @@
+{
+  "blocked_gates": {
+    "complete_repo_checkout": {
+      "reason": "container cannot resolve github.com; no complete repository tree to execute preexisting 16+ tests",
+      "status": "BLOCKED"
+    },
+    "empirical_effectiveness": {
+      "reason": "this increment is validity-gating only",
+      "status": "NOT_RUN"
+    },
+    "legacy_smoke_full_run": {
+      "reason": "complete repository checkout missing; symbolic smoke not substituted for empirical validation",
+      "status": "BLOCKED"
+    }
+  },
+  "classification": "targeted_local_software_validation_only",
+  "environment": {
+    "architecture": "x86_64",
+    "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+    "python": "3.13.5"
+  },
+  "new_tests_discovered": 18,
+  "phase": "1A",
+  "protocol_id": "CCM-EMP-002",
+  "runs": [
+    {
+      "command": "python3 -m compileall -q ccm/empirical ccm/adapters/empirical.py evaluation/empirical experiments/empirical",
+      "end_utc": "2026-10-21T20:37:51.274342+00:00",
+      "exit_code": 0,
+      "expected_outcome": "success_exit_0",
+      "log": "compile.log",
+      "name": "compile",
+      "outcome": "PASS",
+      "start_utc": "2026-10-21T20:37:50.455476+00:00"
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -t . -v",
+      "end_utc": "2026-10-21T20:37:51.998860+00:00",
+      "exit_code": 0,
+      "expected_outcome": "success_exit_0",
+      "log": "unit-invariant.log",
+      "name": "unit-invariant",
+      "outcome": "PASS",
+      "start_utc": "2026-10-21T20:37:51.274810+00:00"
+    },
+    {
+      "command": "./scripts/ccm_preflight --config experiments/configs/smoke_v0.1.0.json",
+      "end_utc": "2026-10-21T20:37:52.846006+00:00",
+      "exit_code": 0,
+      "expected_outcome": "success_exit_0",
+      "log": "preflight-smoke.log",
+      "name": "preflight-smoke",
+      "outcome": "PASS",
+      "start_utc": "2026-10-21T20:37:51.999285+00:00"
+    },
+    {
+      "command": "./scripts/ccm_preflight --config preregistration/registered-configs/ccm-v0.1.0.json",
+      "end_utc": "2026-10-21T20:37:53.708739+00:00",
+      "exit_code": 2,
+      "expected_outcome": "blocked_with_code_2",
+      "log": "preflight-legacy-registered.log",
+      "name": "preflight-legacy-registered",
+      "outcome": "PASS",
+      "start_utc": "2026-10-21T20:37:52.846599+00:00"
+    },
+    {
+      "command": "./scripts/ccm_preflight --config experiments/configs/real_model_unqualified_preflight.json",
+      "end_utc": "2026-10-21T20:37:54.376494+00:00",
+      "exit_code": 2,
+      "expected_outcome": "blocked_with_code_2",
+      "log": "preflight-real-unqualified.log",
+      "name": "preflight-real-unqualified",
+      "outcome": "PASS",
+      "start_utc": "2026-10-21T20:37:53.708948+00:00"
+    }
+  ],
+  "source_branch": "research/ccm-emp-002-phase1a",
+  "source_commit_at_test": "c1ebff174bf95726ffd307ac6e83578353bdcdb1",
+  "source_files": {
+    "ccm/adapters/empirical.py": {
+      "git_blob_sha": "230365b14edf0e2e711335c313da8cd59c61c791",
+      "sha256": "bc547c62ce7796e8c64d67638f8fdabea2210d722b8447f7fe58e06456c35828"
+    },
+    "ccm/empirical/contracts.py": {
+      "git_blob_sha": "abf70be0cc346b52a6807bff682491e1bcc26bf0",
+      "sha256": "3768ddcd88aad883dba0b5e2e0a1f48ffd561ff66de5bf673a4ce518e5db125a"
+    },
+    "ccm/empirical/operations.py": {
+      "git_blob_sha": "472bbbf69ed7c09bbe9558b886c93c7fd35295bb",
+      "sha256": "be1d3d9af7b7e2e3dccc68e3e2f004a2a0057c39d65deedb1ac63cbd20deb94e"
+    },
+    "docs/empirical-boundary.md": {
+      "git_blob_sha": "371ca6d6542e4f0ed674d3b96e5aa8fc98d5b911",
+      "sha256": "8efe0c317c7d1ad8c984929697861bf4748b0d66f04b2e6f33199ca02e84f476"
+    },
+    "evaluation/empirical/oracles.py": {
+      "git_blob_sha": "979a4b253551f8f6b9fdfadea3ff59eb7a1aec29",
+      "sha256": "aab3fe087f09216f5fac441a2218671a4adf3051e018cfec138dfbc266cc9f9c"
+    },
+    "evaluation/empirical/preflight.py": {
+      "git_blob_sha": "bd67173d46747a50f405a00e4ed4ba7c8c712ac3",
+      "sha256": "0ed764df1f36db43aeed1f03a325181407a08291b156ef6327e78b071ed7a0b3"
+    },
+    "experiments/empirical/baseline_registry.json": {
+      "git_blob_sha": "0ae255a473852966de54995e5fcd8d35959498d2",
+      "sha256": "311ed967fe368cd3ea968af2613c842a6012a3d47e9691a4b7a47b6a637779fd"
+    },
+    "experiments/empirical/cases.py": {
+      "git_blob_sha": "76cbf41b345691cd3d032fd6bf6d0755b194684a",
+      "sha256": "772a1eaa7004d082350139d84d515cd2d18716125b10636ed0c9369ba6f9eba1"
+    },
+    "preregistration/ccm-v0.2.0/protocol-lock.json": {
+      "git_blob_sha": "393732a6b48bdcb22a05bdef1342f2beb4ecab4f",
+      "sha256": "11dd6b6114d8c210b2790cf32b906e8140fb26b03483079bae24b7c4b1ad109e"
+    },
+    "scripts/ccm_preflight": {
+      "git_blob_sha": "0bff4b4e3c0f6a3f381ffc1a63db7a9b5dc2edc2",
+      "sha256": "b9ea3e54945e97ccda29cd618c3354eef8cc7ecf774ba191597d69d02493ca3f"
+    },
+    "tests/experiment_smoke/test_empirical_preflight.py": {
+      "git_blob_sha": "ef43bfd1887fa7008c53cd05a39e6cc0f43e3225",
+      "sha256": "e754a4fd70733fb6e37fdd0a74bb383f99e77da46578bfeb3196b0cf0e00d296"
+    },
+    "tests/invariants/test_empirical_boundary.py": {
+      "git_blob_sha": "5760ecd51dca155c2b80a1339bb324fbd523292e",
+      "sha256": "ad449d1daad11cad13c2c3acb1997dba722b653437f348b4a4584e86382254df"
+    }
+  },
+  "unqualified_for_merge": true
+}
