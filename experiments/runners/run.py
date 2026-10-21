@@ -86,6 +86,10 @@ def _record(task: Any, strategy: str, trace: dict[str, Any], usage: Any, config:
 
 
 def run_config(config: dict[str, Any], output_dir: Path, manifest_dir: Path | None = None) -> tuple[Path, Path]:
+    # Fail closed at the lowest legacy entry point, not just shell wrappers.
+    # Registered/pilot/confirmatory results cannot originate from ToyModel.
+    from evaluation.empirical.preflight import require_qualified_run
+    require_qualified_run(config, root=Path(__file__).resolve().parents[2])
     strategies = tuple(config["strategies"])
     invalid = sorted(set(strategies) - set(STRATEGIES))
     if invalid:
