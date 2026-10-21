@@ -6,6 +6,7 @@ from pathlib import Path
 
 from ccm.adapters.empirical import EmpiricalLLMAdapter
 from ccm.empirical.contracts import BoundaryViolation, ModelVisibleCase, VisibleAction, VisibleObservation
+from ccm.empirical.operations import plan_memory_writes, plan_memory_recall
 from evaluation.empirical.oracles import EvaluatorOnlyCase
 from experiments.empirical.cases import make_boundary_fixture
 
@@ -21,6 +22,18 @@ class BoundaryTests(unittest.TestCase):
         self.assertEqual(self.visible.to_json(), before)
         self.assertEqual([x.observation_id for x in self.visible.history],
                          [x.observation_id for x in ModelVisibleCase.from_json(before).history])
+
+    def test_gold_mutation_preserves_memory_write_and_recall_plans(self):
+        writes_before = plan_memory_writes(self.visible)
+        query_before = plan_memory_recall(self.visible)
+        oracle_after = replace(self.oracle, gold_answer="Mutated", accepted_answers=("Mutated",))
+        self.assertNotEqual(oracle_after.gold_answer, self.oracle.gold_answer)
+        self.assertEqual(plan_memory_writes(self.visible), writes_before)
+        self.assertEqual(plan_memory_recall(self.visible), query_before)
+        with self.assertRaises(BoundaryViolation):
+            plan_memory_writes(self.oracle)
+        with self.assertRaises(BoundaryViolation):
+            plan_memory_recall(self.oracle)
 
     def test_candidate_order_independent_of_gold_and_not_always_gold_first(self):
         found_first, found_second = False, False
