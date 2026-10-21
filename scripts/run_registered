@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# CCM-EMP-002 Phase 1A: legacy symbolic configurations may NOT produce
+# registered/pilot/confirmatory evidence. This guard deliberately exits
+# nonzero until a separately qualified empirical runner exists.
+./scripts/ccm_preflight \
+  --config preregistration/registered-configs/ccm-v0.1.0.json \
+  --output results/preflight/ccm-emp-002-legacy-registered.json
+
 python3 -m experiments.runners.run \
   --config preregistration/registered-configs/ccm-v0.1.0.json \
   --output-dir results/raw
