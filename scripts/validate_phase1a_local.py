@@ -50,12 +50,39 @@ def run_command(name: str, argv: list[str], cwd: Path, evidence: Path, expected_
     outcome = "PASS" if returncode == expected_exit else "FAIL"
     found = re.search(r"Ran (\d+) tests? in", text)
     tests = int(found.group(1)) if found else None
+    validation_note = "exit code matched" if outcome == "PASS" else "unexpected exit code"
     if name == "unittest" and (tests is None or tests < 18):
-        outcome = "FAIL"  # an empty/incomplete suite is not evidence
+        outcome, validation_note = "FAIL", "missing or incomplete unittest discovery"
+    if name in {"preflight-smoke", "preflight-block-legacy", "registered-runner-block"}:
+        # Exit status 2 alone can be a missing interpreter/script, not a correct block.
+        try:
+            payload = json.loads(output)
+            checks = {item.get("id"): item.get("status") for item in payload.get("checks", [])}
+            safe = payload.get("protocol_id") == "CCM-EMP-002" and payload.get("eligible_for_empirical") is False
+            if name == "preflight-smoke":
+                safe = safe and payload.get("ok") is True and payload.get("result_classification") == "software_validation_only"
+            else:
+                safe = (safe and payload.get("ok") is False and
+                        all(checks.get(x) == "blocked" for x in
+                            ("baseline_fidelity", "real_model_required", "registered_runner_qualified")))
+            if not safe:
+                outcome, validation_note = "FAIL", "preflight JSON lacks required guard evidence"
+        except (ValueError, TypeError, AttributeError):
+            outcome, validation_note = "FAIL", "preflight did not emit valid JSON guard evidence"
+    if name == "smoke-shape" and not re.search(r"validated [1-9][0-9]* smoke records", output):
+        outcome, validation_note = "FAIL", "smoke shape validator did not validate nonempty records"
+    if name == "paper-check" and "paper source checks OK" not in output:
+        outcome, validation_note = "FAIL", "paper checker did not emit success marker"
+    if name == "smoke":
+        expected_raw = cwd / "out" / "raw" / "ccm-smoke-v0.1.0.jsonl"
+        if not expected_raw.exists() or expected_raw.stat().st_size == 0:
+            outcome, validation_note = "FAIL", "smoke did not generate nonempty raw records"
+    if name == "compileall" and not all((cwd / x).is_dir() for x in ("ccm", "experiments", "evaluation", "tests")):
+        outcome, validation_note = "FAIL", "source directories missing; compileall exit 0 is insufficient"
     return {"name": name, "argv": argv, "log": log.name,
             "started_utc": started, "ended_utc": ended, "exit_code": returncode,
             "expected_exit_code": expected_exit, "outcome": outcome,
-            "test_count": tests, "sha256": sha256(log)}
+            "test_count": tests, "sha256": sha256(log), "validation_note": validation_note}
 
 
 def main() -> int:
