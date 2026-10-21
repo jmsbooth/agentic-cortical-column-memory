@@ -93,6 +93,12 @@ results/              manifest-backed smoke artifacts only
 
 `v0.1.0` publishes the architecture, reference implementation, tests, synthetic validation environments, machine-readable manifests, and preregistered protocol before the full campaign. No checked-in smoke measurement is presented as evidence for a scientific claim.
 
+## Prospective empirical validation (v0.2.0 draft)
+
+The [CCM Empirical Validation Protocol (CCM-EMP-002)](preregistration/ccm-v0.2.0/PROTOCOL.md) defines the planned real-model, memory-first comparative study. It covers leakage-safe model/evaluator boundaries, durable memory, independent baselines, ablation fidelity, held-out histories, resource-matched trials, blinded scoring, statistical error control, and local evidence publication.
+
+**Status: published draft, not frozen or executed.** The existing [v0.1.0 preregistration](preregistration/protocol.md) and software smoke artifacts remain unchanged and must not be cited as empirical validation. The v0.2.0 confirmatory design will be frozen only after pilot calibration, power planning, and all correctness gates pass.
+
 ## Paper
 
 - [Compiled paper](paper/build/main.pdf)
