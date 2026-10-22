@@ -120,7 +120,12 @@ class SQLiteMemoryStore:
             self._conn.execute("PRAGMA synchronous = FULL")
         self._closed = False
         self._writes = self._reads = self._write_ns = self._read_ns = 0
-        self._initialize()
+        try:
+            self._initialize()
+        except Exception:
+            self._conn.close()
+            self._closed = True
+            raise
 
     def _initialize(self) -> None:
         version = int(self._conn.execute("PRAGMA user_version").fetchone()[0])
@@ -324,8 +329,11 @@ class SQLiteMemoryStore:
             raise MemoryConflict("supersession requires same reference frame and location")
         effective = _instant(effective_at) or _instant(new.valid_from) or _instant(new.observed_at)
         prior = _instant(old.valid_from)
+        new_start = _instant(new.valid_from)
         if effective is not None and prior is not None and effective < prior:
             raise MemoryConflict("supersession predates the original state")
+        if effective is not None and new_start is not None and effective < new_start:
+            raise MemoryConflict("supersession predates replacement validity")
         # Lock before graph validation so concurrent writers cannot create cycles.
         self._conn.execute("BEGIN IMMEDIATE")
         try:

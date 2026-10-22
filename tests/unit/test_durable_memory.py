@@ -135,6 +135,21 @@ class DurableMemoryTests(unittest.TestCase):
             with self.assertRaises(MemoryConflict):store.supersede("a","c")
             self.assertEqual(store.supersession_map(),{"a":"b"})
 
+    def test_supersession_rejects_effective_time_before_new_validity(self):
+        with self.open() as store:
+            store.write(observation("a",start=T0))
+            store.write(observation("b",sequence=1,start=T2))
+            with self.assertRaises(MemoryConflict):store.supersede("a","b",effective_at=T1)
+            self.assertEqual(store.supersession_map(),{})
+
+    def test_two_connections_cannot_create_a_supersession_cycle(self):
+        with self.open() as first, self.open() as second:
+            first.write(observation("a"))
+            first.write(observation("b",sequence=1))
+            first.supersede("a","b")
+            with self.assertRaises(MemoryConflict):second.supersede("b","a")
+            self.assertEqual(first.supersession_map(),{"a":"b"})
+
     def test_supersession_rejects_foreign_location_and_missing_object(self):
         with self.open() as store:
             store.write(observation("a",location="a"))
