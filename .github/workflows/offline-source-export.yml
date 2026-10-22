@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - research/ccm-emp-002-phase1a
+      - research/ccm-emp-002-phase1b-persistence
     paths:
       - .github/workflows/offline-source-export.yml
 
@@ -25,7 +26,7 @@ jobs:
           test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
           git bundle create "$RUNNER_TEMP/ccm-source.bundle" HEAD
           git bundle verify "$RUNNER_TEMP/ccm-source.bundle"
-          sha256sum "$RUNNER_TEMP/ccm-source.bundle" > "$RUNNER_TEMP/SHA256SUMS.txt"
+          (cd "$RUNNER_TEMP" && sha256sum ccm-source.bundle > SHA256SUMS.txt)
           git rev-parse HEAD > "$RUNNER_TEMP/HEAD.txt"
       - name: Export transport artifact (not test evidence)
         uses: actions/upload-artifact@v4
