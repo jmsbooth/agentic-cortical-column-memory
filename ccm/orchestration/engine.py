@@ -8,7 +8,7 @@ from typing import Any, Callable, Iterable
 from ccm.active_evidence.policy import ActiveEvidencePolicy
 from ccm.column.core import Column
 from ccm.consensus.voting import ConsensusResult, reconcile_hypotheses, structured_consensus
-from ccm.memory.store import MemoryStore
+from ccm.memory.store import MemoryConflict, MemoryStore
 from ccm.recall.core import RecallQuery, assemble_context
 from ccm.schemas.models import EvidenceAction, Hypothesis, Observation, ReferenceFrame
 
@@ -33,6 +33,7 @@ class CCMEngine:
         use_structured_vote: bool = True,
         specialize: bool = True,
         max_steps: int = 4,
+        memory_factory: Callable[[], MemoryStore] | None = None,
     ) -> None:
         self.frame = frame
         self.columns = columns
@@ -46,6 +47,8 @@ class CCMEngine:
         self.specialize = specialize
         self.max_steps = max_steps
         self.policy = ActiveEvidencePolicy()
+        # The caller owns the persistent store lifecycle and closes it explicitly.
+        self.memory_factory = memory_factory if memory_factory is not None else MemoryStore
 
     def solve(
         self,
@@ -57,11 +60,17 @@ class CCMEngine:
         observe_action: Callable[[EvidenceAction], Observation],
         recall_query: str | None = None,
     ) -> dict[str, Any]:
-        memory = MemoryStore()
+        memory = self.memory_factory()
         actions = tuple(actions)
         base_hypotheses = tuple(hypotheses)
         for observation in initial_observations:
-            memory.write(observation)
+            try:
+                prior = memory.get(observation.object_id)
+            except KeyError:
+                memory.write(observation)
+            else:
+                if prior != observation:
+                    raise MemoryConflict("attempted overwrite of a persistent observation")
         all_hypotheses = base_hypotheses
         used_actions: set[str] = set()
         action_trace: list[dict[str, Any]] = []
