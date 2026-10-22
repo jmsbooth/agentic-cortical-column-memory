@@ -1,0 +1,13 @@
+{
+  "protocol": "CCM-EMP-002",
+  "last_audited": "2026-10-21",
+  "baselines": {
+    "M0": {"implementation_status": "legacy_symbolic_only", "confirmatory_eligible": false},
+    "M1": {"implementation_status": "legacy_symbolic_only", "confirmatory_eligible": false},
+    "M2": {"implementation_status": "placeholder_last_observation", "confirmatory_eligible": false},
+    "M3": {"implementation_status": "placeholder_not_embeddings", "confirmatory_eligible": false},
+    "M4": {"implementation_status": "placeholder_not_episodic", "confirmatory_eligible": false},
+    "M5": {"implementation_status": "placeholder_not_knowledge_graph", "confirmatory_eligible": false},
+    "M6": {"implementation_status": "prototype_in_memory_not_validated", "confirmatory_eligible": false}
+  }
+}

@@ -1,0 +1,30 @@
+COMMAND: python3 -m unittest discover -s tests -t . -v
+
+STDOUT:
+
+STDERR:
+test_protocol_integrity_check (tests.experiment_smoke.test_empirical_preflight.PreflightTests.test_protocol_integrity_check) ... ok
+test_real_model_still_blocked_until_fidelity_gate (tests.experiment_smoke.test_empirical_preflight.PreflightTests.test_real_model_still_blocked_until_fidelity_gate) ... ok
+test_registered_toy_and_placeholder_baselines_blocked (tests.experiment_smoke.test_empirical_preflight.PreflightTests.test_registered_toy_and_placeholder_baselines_blocked) ... ok
+test_smoke_is_not_empirical (tests.experiment_smoke.test_empirical_preflight.PreflightTests.test_smoke_is_not_empirical) ... ok
+test_source_allowlist_enforced (tests.experiment_smoke.test_empirical_preflight.PreflightTests.test_source_allowlist_enforced) ... ok
+test_adapter_rejects_symbolic_backend_and_invalid_model_reply (tests.invariants.test_empirical_boundary.BoundaryTests.test_adapter_rejects_symbolic_backend_and_invalid_model_reply) ... ok
+test_candidate_order_independent_of_gold_and_not_always_gold_first (tests.invariants.test_empirical_boundary.BoundaryTests.test_candidate_order_independent_of_gold_and_not_always_gold_first) ... ok
+test_cross_case_ids_and_source_tamper_rejected (tests.invariants.test_empirical_boundary.BoundaryTests.test_cross_case_ids_and_source_tamper_rejected) ... ok
+test_duplicate_json_keys_fail_closed (tests.invariants.test_empirical_boundary.BoundaryTests.test_duplicate_json_keys_fail_closed) ... ok
+test_evaluator_does_not_fit_visible_contract (tests.invariants.test_empirical_boundary.BoundaryTests.test_evaluator_does_not_fit_visible_contract) ... ok
+test_extra_gold_field_fails_closed (tests.invariants.test_empirical_boundary.BoundaryTests.test_extra_gold_field_fails_closed) ... ok
+test_foreign_action_is_blocked (tests.invariants.test_empirical_boundary.BoundaryTests.test_foreign_action_is_blocked) ... ok
+test_gold_change_does_not_change_visible_payload_or_observation_ids (tests.invariants.test_empirical_boundary.BoundaryTests.test_gold_change_does_not_change_visible_payload_or_observation_ids) ... ok
+test_gold_mutation_preserves_memory_write_and_recall_plans (tests.invariants.test_empirical_boundary.BoundaryTests.test_gold_mutation_preserves_memory_write_and_recall_plans) ... ok
+test_model_cannot_cite_foreign_or_fabricated_evidence (tests.invariants.test_empirical_boundary.BoundaryTests.test_model_cannot_cite_foreign_or_fabricated_evidence) ... ok
+test_model_payload_excludes_evaluator_metadata (tests.invariants.test_empirical_boundary.BoundaryTests.test_model_payload_excludes_evaluator_metadata) ... ok
+test_real_model_adapter_sees_only_visible_payload (tests.invariants.test_empirical_boundary.BoundaryTests.test_real_model_adapter_sees_only_visible_payload) ... ok
+test_support_marker_and_evaluator_canary_rejected (tests.invariants.test_empirical_boundary.BoundaryTests.test_support_marker_and_evaluator_canary_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.022s
+
+OK
+
+EXIT_CODE: 0

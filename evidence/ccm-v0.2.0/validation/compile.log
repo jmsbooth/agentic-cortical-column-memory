@@ -1,0 +1,7 @@
+COMMAND: python3 -m compileall -q ccm/empirical ccm/adapters/empirical.py evaluation/empirical experiments/empirical
+
+STDOUT:
+
+STDERR:
+
+EXIT_CODE: 0

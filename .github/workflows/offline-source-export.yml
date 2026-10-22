@@ -1,0 +1,39 @@
+name: Export source snapshot for offline validation
+
+on:
+  push:
+    branches:
+      - research/ccm-emp-002-phase1a
+    paths:
+      - .github/workflows/offline-source-export.yml
+
+permissions:
+  contents: read
+
+jobs:
+  export-source:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the exact branch commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Record and package exact Git commit for local tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          git bundle create "$RUNNER_TEMP/ccm-source.bundle" HEAD
+          git bundle verify "$RUNNER_TEMP/ccm-source.bundle"
+          sha256sum "$RUNNER_TEMP/ccm-source.bundle" > "$RUNNER_TEMP/SHA256SUMS.txt"
+          git rev-parse HEAD > "$RUNNER_TEMP/HEAD.txt"
+      - name: Export transport artifact (not test evidence)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ccm-offline-source
+          path: |
+            ${{ runner.temp }}/ccm-source.bundle
+            ${{ runner.temp }}/SHA256SUMS.txt
+            ${{ runner.temp }}/HEAD.txt
+          if-no-files-found: error
+          retention-days: 2
