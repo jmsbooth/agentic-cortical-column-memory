@@ -25,7 +25,7 @@ class InMemoryTemporalTests(unittest.TestCase):
     def test_unknown_effective_date_retains_historical_ambiguity(self):
         s=MemoryStore()
         s.write(obs("a"));s.write(obs("b",seq=1));s.supersede("a","b")
-        self.assertEqual({x.object_id for x in s.current("f",at_time="2026-03-01T00:00:00Z")},{"a","b"})
+        self.assertEqual(s.current("f",at_time="2026-03-01T00:00:00Z"),())
         self.assertEqual([x.object_id for x in s.current("f")],["b"])
 
     def test_bitemporal_cutoff_not_future(self):

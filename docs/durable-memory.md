@@ -20,10 +20,10 @@ The SQLite file survives process restarts. `PRAGMA user_version` fixes schema ve
 
 ## Historical and as-known-at semantics
 
-- `historical(frame_id, at_time=T)` returns **all** observations valid in world time T, including contradictory states and observations entered after T. It never collapses evidence.
+- `historical(frame_id, at_time=T)` returns **all temporally anchored** observations valid in world time T, including contradictions and late-entered evidence. A valid-from timestamp, or at least an observation timestamp, must establish that the fact was available no later than T. Undated entries remain in raw history but cannot assert truth at an arbitrary historical time.
 - `historical(frame_id, at_time=T, known_at=K)` further limits results to observations recorded by system time K. A late-arriving observation is not visible in an earlier as-known-at view.
 - `current(frame_id, at_time=T, known_at=K)` derives the unsuperseded view at world time T, as known by system time K. A supersession recorded after K has no effect in that earlier knowledge view.
-- `current(frame_id)` derives the present interpretation. Records that conflict without an explicit supersession remain visible rather than silently choosing the newest record.
+- `current(frame_id)` derives the present interpretation, including undated observations as current evidence when not explicitly expired. Records that conflict without an explicit supersession remain visible rather than silently choosing the newest record.
 - If a supersession has no trustworthy effective time, it may suppress the old record in the present view but does not rewrite point-in-time historical queries. Ambiguous history remains visible.
 
 Timestamps must be timezone-aware ISO 8601/RFC3339 strings. Naive or malformed strings, reversed validity intervals, identity conflicts, cross-namespace references, invalid migrations, and supersession cycles fail closed.

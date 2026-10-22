@@ -116,7 +116,8 @@ class MemoryStore:
         values = self.retrieve(frame_id, location=location)
         if when is not None:
             values = tuple(item for item in values
-                           if (_parse_time(item.valid_from) is None or _parse_time(item.valid_from) <= when)
+                           if (_parse_time(item.valid_from) or _parse_time(item.observed_at)) is not None
+                           and (_parse_time(item.valid_from) or _parse_time(item.observed_at)) <= when
                            and (_parse_time(item.valid_to) is None or when < _parse_time(item.valid_to)))
         if known is not None:
             # Without recorded_at the system cannot certify when the item was known.
@@ -133,7 +134,14 @@ class MemoryStore:
         at_time: Optional[str] = None, known_at: Optional[str] = None
     ) -> tuple[Observation, ...]:
         when = _parse_time(at_time) if at_time is not None else datetime.now(timezone.utc)
-        candidates = self.historical(frame_id, location=location, at_time=when.isoformat(), known_at=known_at)
+        candidates = self.historical(frame_id, location=location,
+                                     at_time=when.isoformat() if at_time is not None else None,
+                                     known_at=known_at)
+        if at_time is None:
+            candidates = tuple(item for item in candidates
+                if (_parse_time(item.valid_from) or _parse_time(item.observed_at)) is None
+                or ((_parse_time(item.valid_from) or _parse_time(item.observed_at)) <= when
+                and (_parse_time(item.valid_to) is None or when < _parse_time(item.valid_to))))
         result: list[Observation] = []
         for item in candidates:
             replacement_id = self._superseded_by.get(item.object_id) or item.superseded_by

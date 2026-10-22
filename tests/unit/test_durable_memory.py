@@ -109,8 +109,22 @@ class DurableMemoryTests(unittest.TestCase):
             store.write(observation("old"))
             store.write(observation("new",sequence=1))
             store.supersede("old","new")
-            self.assertEqual({o.object_id for o in store.current("frame:entity",at_time=T0)},{"old","new"})
+            # Without temporal anchors neither item can establish historical truth.
+            self.assertEqual(store.current("frame:entity",at_time=T0),())
             self.assertEqual({o.object_id for o in store.current("frame:entity")},{"new"})
+
+    def test_future_observation_is_never_visible_in_earlier_historical_state(self):
+        with self.open() as store:
+            store.write(observation("future",observed_at=T2))
+            self.assertEqual(store.historical("frame:entity",at_time=T1),())
+            self.assertEqual(store.current("frame:entity",at_time=T1),())
+            self.assertEqual([o.object_id for o in store.historical("frame:entity",at_time=T2)],["future"])
+
+    def test_undated_observation_still_available_to_present_recall(self):
+        with self.open() as store:
+            store.write(observation("undated"))
+            self.assertEqual(store.historical("frame:entity",at_time=T1),())
+            self.assertEqual([o.object_id for o in store.current("frame:entity")],["undated"])
 
     def test_late_arrival_reconstructs_historical_state(self):
         with self.open() as store:

@@ -49,8 +49,13 @@ def _now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="microseconds")
 
 
-def _valid_at(observation: Observation, when: datetime) -> bool:
-    start, end = _instant(observation.valid_from), _instant(observation.valid_to)
+def _valid_at(observation: Observation, when: datetime, *, require_anchor: bool = False) -> bool:
+    # The first observation time bounds what we can assert about an undated
+    # event. It does not prove that the observed state existed any earlier.
+    start = _instant(observation.valid_from) or _instant(observation.observed_at)
+    end = _instant(observation.valid_to)
+    if require_anchor and start is None:
+        return False
     return (start is None or start <= when) and (end is None or when < end)
 
 
@@ -317,7 +322,7 @@ class SQLiteMemoryStore:
         when = _instant(at_time)
         values = self._rows(frame_id=frame_id, location=location, known_at=known_at)
         if when is not None:
-            values = tuple(item for item in values if _valid_at(item, when))
+            values = tuple(item for item in values if _valid_at(item, when, require_anchor=True))
         return values[:limit] if limit is not None else values
 
     def supersede(self, observation_id: str, replacement_id: str, *, effective_at: str | None = None, recorded_at: str | None = None) -> None:
@@ -379,7 +384,13 @@ class SQLiteMemoryStore:
 
     def current(self, frame_id: str, *, location: str | None = None, at_time: str | None = None, known_at: str | None = None) -> tuple[Observation, ...]:
         when = _instant(at_time) if at_time is not None else datetime.now(timezone.utc)
-        candidates = self.historical(frame_id, location=location, at_time=when.isoformat(), known_at=known_at)
+        candidates = self.historical(frame_id, location=location,
+                                     at_time=when.isoformat() if at_time is not None else None,
+                                     known_at=known_at)
+        if at_time is None:
+            # The present can include undated current observations, but not
+            # records that are explicitly expired or future-effective.
+            candidates = tuple(x for x in candidates if _valid_at(x, when))
         links = self._supersessions(known_at)
         result = []
         for obs in candidates:
