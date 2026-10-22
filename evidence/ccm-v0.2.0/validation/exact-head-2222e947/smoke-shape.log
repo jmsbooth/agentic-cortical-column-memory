@@ -1,0 +1,7 @@
+$ /opt/pyvenv/bin/python3 scripts/check_smoke.py /tmp/ccm-exact-head-ppqakdbb/src/out/raw/ccm-smoke-v0.1.0.jsonl
+START_UTC=2026-10-22T13:14:31.182047+00:00
+END_UTC=2026-10-22T13:14:32.068999+00:00
+validated 156 smoke records
+
+EXIT_CODE=0
+EXPECTED_EXIT_CODE=0

@@ -1,0 +1,169 @@
+{
+  "assertions": {
+    "no_empirical_effectiveness_claim": true,
+    "tested_exact_git_head": true
+  },
+  "classification": "local_software_validation_only",
+  "end_utc": "2026-10-22T13:14:35.273796+00:00",
+  "head_sha": "2222e947825c014ca458aee2fc9406773f9a4075",
+  "host": {
+    "architecture": "x86_64",
+    "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+    "python": "3.13.5"
+  },
+  "protocol": "CCM-EMP-002",
+  "runs": [
+    {
+      "argv": [
+        "/opt/pyvenv/bin/python3",
+        "-m",
+        "compileall",
+        "-q",
+        "ccm",
+        "experiments",
+        "evaluation",
+        "tests"
+      ],
+      "ended_utc": "2026-10-22T13:14:29.273089+00:00",
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "log": "compileall.log",
+      "name": "compileall",
+      "outcome": "PASS",
+      "sha256": "b8cb596c5e73fc78bf33c40964839fc68cc294100ab2410853ada86cb30ca204",
+      "started_utc": "2026-10-22T13:14:28.212351+00:00",
+      "test_count": null,
+      "validation_note": "exit code matched"
+    },
+    {
+      "argv": [
+        "/opt/pyvenv/bin/python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-t",
+        ".",
+        "-v"
+      ],
+      "ended_utc": "2026-10-22T13:14:30.345817+00:00",
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "log": "unittest.log",
+      "name": "unittest",
+      "outcome": "PASS",
+      "sha256": "519d5f4c27a4361a8c12a07285e31884ac4472236747055266dd044138a8b847",
+      "started_utc": "2026-10-22T13:14:29.273655+00:00",
+      "test_count": 45,
+      "validation_note": "exit code matched"
+    },
+    {
+      "argv": [
+        "bash",
+        "scripts/run_smoke",
+        "--output-dir",
+        "/tmp/ccm-exact-head-ppqakdbb/src/out/raw"
+      ],
+      "ended_utc": "2026-10-22T13:14:31.181707+00:00",
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "log": "smoke.log",
+      "name": "smoke",
+      "outcome": "PASS",
+      "sha256": "adc5198a12f85262ecbdfb459623616f84aa202525577b2bad8d9b6ed908ed9e",
+      "started_utc": "2026-10-22T13:14:30.346582+00:00",
+      "test_count": null,
+      "validation_note": "exit code matched"
+    },
+    {
+      "argv": [
+        "/opt/pyvenv/bin/python3",
+        "scripts/check_smoke.py",
+        "/tmp/ccm-exact-head-ppqakdbb/src/out/raw/ccm-smoke-v0.1.0.jsonl"
+      ],
+      "ended_utc": "2026-10-22T13:14:32.068999+00:00",
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "log": "smoke-shape.log",
+      "name": "smoke-shape",
+      "outcome": "PASS",
+      "sha256": "007f88fa79d80963493b01d1c3ff508fa51b869049dd761aaa651698c481db7f",
+      "started_utc": "2026-10-22T13:14:31.182047+00:00",
+      "test_count": null,
+      "validation_note": "exit code matched"
+    },
+    {
+      "argv": [
+        "/opt/pyvenv/bin/python3",
+        "scripts/ccm_preflight",
+        "--config",
+        "experiments/configs/smoke_v0.1.0.json"
+      ],
+      "ended_utc": "2026-10-22T13:14:32.890240+00:00",
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "log": "preflight-smoke.log",
+      "name": "preflight-smoke",
+      "outcome": "PASS",
+      "sha256": "a771ea620f6a5b12658a458251a543c44d7f9fab46a6c416f29a22d6d51c8b1b",
+      "started_utc": "2026-10-22T13:14:32.069383+00:00",
+      "test_count": null,
+      "validation_note": "exit code matched"
+    },
+    {
+      "argv": [
+        "/opt/pyvenv/bin/python3",
+        "scripts/ccm_preflight",
+        "--config",
+        "preregistration/registered-configs/ccm-v0.1.0.json"
+      ],
+      "ended_utc": "2026-10-22T13:14:33.695259+00:00",
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "log": "preflight-block-legacy.log",
+      "name": "preflight-block-legacy",
+      "outcome": "PASS",
+      "sha256": "f119ad0c2f6d35217fc69d84066dba09fc1a20d68b45af31d39a00dfc6296374",
+      "started_utc": "2026-10-22T13:14:32.890875+00:00",
+      "test_count": null,
+      "validation_note": "exit code matched"
+    },
+    {
+      "argv": [
+        "bash",
+        "scripts/run_registered"
+      ],
+      "ended_utc": "2026-10-22T13:14:34.464819+00:00",
+      "exit_code": 2,
+      "expected_exit_code": 2,
+      "log": "registered-runner-block.log",
+      "name": "registered-runner-block",
+      "outcome": "PASS",
+      "sha256": "3b474a692ae1ee67c7a3116fc4f6889599a770a33de814fd85ffe5d8117cdf2b",
+      "started_utc": "2026-10-22T13:14:33.695594+00:00",
+      "test_count": null,
+      "validation_note": "exit code matched"
+    },
+    {
+      "argv": [
+        "/opt/pyvenv/bin/python3",
+        "scripts/check_paper.py"
+      ],
+      "ended_utc": "2026-10-22T13:14:35.270959+00:00",
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "log": "paper-check.log",
+      "name": "paper-check",
+      "outcome": "PASS",
+      "sha256": "412e0a089877982d2b97952261365fc5247226d95eb5dce48d1d7a9bba5359e7",
+      "started_utc": "2026-10-22T13:14:34.465164+00:00",
+      "test_count": null,
+      "validation_note": "exit code matched"
+    }
+  ],
+  "stage": "Phase 1A exact-head local regression",
+  "start_utc": "2026-10-22T13:14:28.183630+00:00",
+  "status": "PASS",
+  "worktree_sha": "2222e947825c014ca458aee2fc9406773f9a4075"
+}

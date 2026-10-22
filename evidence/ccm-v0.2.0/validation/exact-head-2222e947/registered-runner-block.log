@@ -1,0 +1,60 @@
+$ bash scripts/run_registered
+START_UTC=2026-10-22T13:14:33.695594+00:00
+END_UTC=2026-10-22T13:14:34.464819+00:00
+{
+  "checks": [
+    {
+      "detail": "run_kind=registered",
+      "id": "run_kind_recognized",
+      "status": "pass"
+    },
+    {
+      "detail": "sha256=e583099d7b2bdd8b0d56eda83e620c24a063eeeeaee1c5cc4f1ebb1d035d60b6",
+      "id": "protocol_integrity",
+      "status": "pass"
+    },
+    {
+      "detail": "ModelVisibleCase contains no evaluator answer fields",
+      "id": "visible_schema_allowlist",
+      "status": "pass"
+    },
+    {
+      "detail": "empirical boundary sources contain no evaluator import or gold reads",
+      "id": "gold_access_allowlist",
+      "status": "pass"
+    },
+    {
+      "detail": "two schema objects remain independently serialized; forbidden field rejected",
+      "id": "fixture_metamorphic_boundary",
+      "status": "pass"
+    },
+    {
+      "detail": "explicit, inspectable baseline implementation status",
+      "id": "baseline_registry_present",
+      "status": "pass"
+    },
+    {
+      "detail": "qualified=[]; requested=['M0', 'M1', 'M2', 'M3', 'M4', 'M5', 'M6', 'CCM-NoRF', 'CCM-NoModules', 'CCM-NoTemporal', 'CCM-NoReconciliation', 'CCM-NoActive', 'CCM-FlatLedger']; placeholders are not empirical baselines",
+      "id": "baseline_fidelity",
+      "status": "blocked"
+    },
+    {
+      "detail": "toy/symbolic/smoke models are ineligible for pilot or confirmatory inference",
+      "id": "real_model_required",
+      "status": "blocked"
+    },
+    {
+      "detail": "existing experiments.runners.run is symbolic; an independent empirical runner is not yet approved",
+      "id": "registered_runner_qualified",
+      "status": "blocked"
+    }
+  ],
+  "eligible_for_empirical": false,
+  "ok": false,
+  "protocol_id": "CCM-EMP-002",
+  "result_classification": "unexecuted_empirical_preflight",
+  "run_kind": "registered"
+}
+
+EXIT_CODE=2
+EXPECTED_EXIT_CODE=2
