@@ -1,0 +1,56 @@
+$ /opt/pyvenv/bin/python3 -m unittest discover -s tests -t . -v
+START_UTC=2026-10-22T13:14:29.273655+00:00
+END_UTC=2026-10-22T13:14:30.345817+00:00
+test_protocol_integrity_check (tests.experiment_smoke.test_empirical_preflight.PreflightTests.test_protocol_integrity_check) ... ok
+test_real_model_still_blocked_until_fidelity_gate (tests.experiment_smoke.test_empirical_preflight.PreflightTests.test_real_model_still_blocked_until_fidelity_gate) ... ok
+test_registered_toy_and_placeholder_baselines_blocked (tests.experiment_smoke.test_empirical_preflight.PreflightTests.test_registered_toy_and_placeholder_baselines_blocked) ... ok
+test_smoke_is_not_empirical (tests.experiment_smoke.test_empirical_preflight.PreflightTests.test_smoke_is_not_empirical) ... ok
+test_source_allowlist_enforced (tests.experiment_smoke.test_empirical_preflight.PreflightTests.test_source_allowlist_enforced) ... ok
+test_runner_emits_manifest_and_complete_records (tests.experiment_smoke.test_runner.RunnerSmokeTests.test_runner_emits_manifest_and_complete_records) ... ok
+test_active_task_gathers_evidence_and_traces_it (tests.integration.test_engine.EngineIntegrationTests.test_active_task_gathers_evidence_and_traces_it) ... ok
+test_conflicting_evidence_does_not_collapse_to_majority (tests.integration.test_engine.EngineIntegrationTests.test_conflicting_evidence_does_not_collapse_to_majority) ... ok
+test_incomplete_task_does_not_force_consensus (tests.integration.test_engine.EngineIntegrationTests.test_incomplete_task_does_not_force_consensus) ... ok
+test_vote_references_existing_hypothesis_identity (tests.invariants.test_contracts.ContractInvariantTests.test_vote_references_existing_hypothesis_identity) ... ok
+test_adapter_rejects_symbolic_backend_and_invalid_model_reply (tests.invariants.test_empirical_boundary.BoundaryTests.test_adapter_rejects_symbolic_backend_and_invalid_model_reply) ... ok
+test_candidate_order_independent_of_gold_and_not_always_gold_first (tests.invariants.test_empirical_boundary.BoundaryTests.test_candidate_order_independent_of_gold_and_not_always_gold_first) ... ok
+test_cross_case_ids_and_source_tamper_rejected (tests.invariants.test_empirical_boundary.BoundaryTests.test_cross_case_ids_and_source_tamper_rejected) ... ok
+test_duplicate_json_keys_fail_closed (tests.invariants.test_empirical_boundary.BoundaryTests.test_duplicate_json_keys_fail_closed) ... ok
+test_evaluator_does_not_fit_visible_contract (tests.invariants.test_empirical_boundary.BoundaryTests.test_evaluator_does_not_fit_visible_contract) ... ok
+test_extra_gold_field_fails_closed (tests.invariants.test_empirical_boundary.BoundaryTests.test_extra_gold_field_fails_closed) ... ok
+test_foreign_action_is_blocked (tests.invariants.test_empirical_boundary.BoundaryTests.test_foreign_action_is_blocked) ... ok
+test_gold_change_does_not_change_visible_payload_or_observation_ids (tests.invariants.test_empirical_boundary.BoundaryTests.test_gold_change_does_not_change_visible_payload_or_observation_ids) ... ok
+test_gold_mutation_preserves_memory_write_and_recall_plans (tests.invariants.test_empirical_boundary.BoundaryTests.test_gold_mutation_preserves_memory_write_and_recall_plans) ... ok
+test_model_cannot_cite_foreign_or_fabricated_evidence (tests.invariants.test_empirical_boundary.BoundaryTests.test_model_cannot_cite_foreign_or_fabricated_evidence) ... ok
+test_model_payload_excludes_evaluator_metadata (tests.invariants.test_empirical_boundary.BoundaryTests.test_model_payload_excludes_evaluator_metadata) ... ok
+test_real_model_adapter_sees_only_visible_payload (tests.invariants.test_empirical_boundary.BoundaryTests.test_real_model_adapter_sees_only_visible_payload) ... ok
+test_support_marker_and_evaluator_canary_rejected (tests.invariants.test_empirical_boundary.BoundaryTests.test_support_marker_and_evaluator_canary_rejected) ... ok
+test_seeded_task_generation_is_stable (tests.regression.test_determinism.DeterminismTests.test_seeded_task_generation_is_stable) ... ok
+test_selects_information_gain_per_cost_and_respects_budget (tests.unit.test_active_evidence.ActiveEvidenceTests.test_selects_information_gain_per_cost_and_respects_budget) ... ok
+test_provider_neutral_adapter_requires_candidate_and_preserves_evidence (tests.unit.test_adapter.AdapterTests.test_provider_neutral_adapter_requires_candidate_and_preserves_evidence) ... ok
+test_agreement_commits (tests.unit.test_column_consensus.ColumnConsensusTests.test_agreement_commits) ... ok
+test_column_state_and_peer_ingestion (tests.unit.test_column_consensus.ColumnConsensusTests.test_column_state_and_peer_ingestion) ... ok
+test_low_confidence_abstains (tests.unit.test_column_consensus.ColumnConsensusTests.test_low_confidence_abstains) ... ok
+test_tie_is_unresolved (tests.unit.test_column_consensus.ColumnConsensusTests.test_tie_is_unresolved) ... ok
+test_conflicting_observations_remain_distinct (tests.unit.test_memory.MemoryTests.test_conflicting_observations_remain_distinct) ... ok
+test_history_and_current_state_are_separate (tests.unit.test_memory.MemoryTests.test_history_and_current_state_are_separate) ... ok
+test_model_generated_external_observation_is_rejected (tests.unit.test_memory.MemoryTests.test_model_generated_external_observation_is_rejected) ... ok
+test_provenance_and_immutable_duplicate_handling (tests.unit.test_memory.MemoryTests.test_provenance_and_immutable_duplicate_handling) ... ok
+test_supersession_is_append_only (tests.unit.test_memory.MemoryTests.test_supersession_is_append_only) ... ok
+test_recall_is_bounded_and_keeps_conflicts_visible (tests.unit.test_recall.RecallTests.test_recall_is_bounded_and_keeps_conflicts_visible) ... ok
+test_recall_prefers_relevant_evidence_and_returns_provenance (tests.unit.test_recall.RecallTests.test_recall_prefers_relevant_evidence_and_returns_provenance) ... ok
+test_agreement_is_not_forced_vote (tests.unit.test_reconciliation.ReconciliationTests.test_agreement_is_not_forced_vote) ... ok
+test_complementary_states_are_distinguished_from_conflict (tests.unit.test_reconciliation.ReconciliationTests.test_complementary_states_are_distinguished_from_conflict) ... ok
+test_same_location_conflict_remains_unresolved (tests.unit.test_reconciliation.ReconciliationTests.test_same_location_conflict_remains_unresolved) ... ok
+test_invalid_transition_is_rejected (tests.unit.test_reference_frames.ReferenceFrameTests.test_invalid_transition_is_rejected) ... ok
+test_location_persists_and_wrong_frame_is_rejected (tests.unit.test_reference_frames.ReferenceFrameTests.test_location_persists_and_wrong_frame_is_rejected) ... ok
+test_valid_transition_and_prediction (tests.unit.test_reference_frames.ReferenceFrameTests.test_valid_transition_and_prediction) ... ok
+test_bootstrap_is_deterministic_and_bounded (tests.unit.test_statistics.StatisticsTests.test_bootstrap_is_deterministic_and_bounded) ... ok
+test_holm_preserves_order (tests.unit.test_statistics.StatisticsTests.test_holm_preserves_order) ... ok
+
+----------------------------------------------------------------------
+Ran 45 tests in 0.158s
+
+OK
+
+EXIT_CODE=0
+EXPECTED_EXIT_CODE=0
