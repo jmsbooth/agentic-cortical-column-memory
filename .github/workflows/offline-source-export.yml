@@ -24,6 +24,7 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          # Bundle transports immutable Git objects; acceptance tests run separately, locally.
           git bundle create "$RUNNER_TEMP/ccm-source.bundle" HEAD
           git bundle verify "$RUNNER_TEMP/ccm-source.bundle"
           (cd "$RUNNER_TEMP" && sha256sum ccm-source.bundle > SHA256SUMS.txt)

@@ -398,7 +398,15 @@ class SQLiteMemoryStore:
             if link is not None:
                 _,effective_at,_recorded_at = link
                 # Undated replacement is unknown for an explicit historical query.
-                if at_time is None or (effective_at is not None and _instant(effective_at) <= when):
+                # A replacement scheduled for a future world-time instant
+                # cannot erase the old state from the current view today.
+                # If the effective time is unknown, only the present view
+                # treats the old item as replaced; historical queries retain
+                # the uncertainty rather than backdating the transition.
+                if effective_at is None:
+                    if at_time is None:
+                        continue
+                elif _instant(effective_at) <= when:
                     continue
             result.append(obs)
         # Never silently collapse contradictory unsuperseded observations.

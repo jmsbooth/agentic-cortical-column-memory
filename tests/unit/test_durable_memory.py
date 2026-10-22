@@ -113,6 +113,16 @@ class DurableMemoryTests(unittest.TestCase):
             self.assertEqual(store.current("frame:entity",at_time=T0),())
             self.assertEqual({o.object_id for o in store.current("frame:entity")},{"new"})
 
+    def test_future_effective_supersession_retains_old_current_state(self):
+        with tempfile.TemporaryDirectory() as directory:
+            with SQLiteMemoryStore(Path(directory) / "state.sqlite3", agent_id="agent-A", column_id="column-1") as store:
+                store.write(observation("old", start="2025-01-01T00:00:00Z"))
+                store.write(observation("replacement", start="2035-01-01T00:00:00Z"))
+                store.supersede("old", "replacement", effective_at="2035-01-01T00:00:00Z")
+                self.assertEqual([x.object_id for x in store.current("frame:entity")], ["old"])
+                self.assertEqual([x.object_id for x in store.current("frame:entity", at_time="2034-01-01T00:00:00Z")], ["old"])
+                self.assertEqual([x.object_id for x in store.current("frame:entity", at_time="2036-01-01T00:00:00Z")], ["replacement"])
+
     def test_future_observation_is_never_visible_in_earlier_historical_state(self):
         with self.open() as store:
             store.write(observation("future",observed_at=T2))

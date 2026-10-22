@@ -156,9 +156,12 @@ class MemoryStore:
                 effective = self._supersession_effective.get(item.object_id)
                 if effective is None and replacement is not None:
                     effective = replacement.valid_from or replacement.observed_at
-                if at_time is None:
-                    continue
-                if effective is not None and _parse_time(effective) <= when:
+                # Preserve the previous state until a future-dated
+                # supersession actually takes effect in world time.
+                if effective is None:
+                    if at_time is None:
+                        continue
+                elif _parse_time(effective) <= when:
                     continue
             result.append(item)
         # A later sequence number is not proof that contradictory evidence is resolved.

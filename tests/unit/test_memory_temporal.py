@@ -36,6 +36,15 @@ class InMemoryTemporalTests(unittest.TestCase):
         self.assertEqual({x.object_id for x in s.current("f",at_time="2026-03-02T00:00:00Z",known_at="2026-02-15T00:00:00Z")},{"a","b"})
         self.assertEqual([x.object_id for x in s.current("f",at_time="2026-03-02T00:00:00Z",known_at="2026-03-02T00:00:00Z")],["b"])
 
+    def test_future_effective_supersession_retains_old_current_state(self):
+        s = MemoryStore()
+        s.write(obs("old", start="2025-01-01T00:00:00Z"))
+        s.write(obs("replacement", seq=1, start="2035-01-01T00:00:00Z"))
+        s.supersede("old", "replacement", effective_at="2035-01-01T00:00:00Z")
+        self.assertEqual([x.object_id for x in s.current("f")], ["old"])
+        self.assertEqual([x.object_id for x in s.current("f", at_time="2034-01-01T00:00:00Z")], ["old"])
+        self.assertEqual([x.object_id for x in s.current("f", at_time="2036-01-01T00:00:00Z")], ["replacement"])
+
     def test_supersession_rejects_cycles_and_foreign_frame(self):
         s=MemoryStore()
         s.write(obs("a"));s.write(obs("b"));s.write(obs("c",location="other"))
