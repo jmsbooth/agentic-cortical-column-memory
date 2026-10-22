@@ -1,0 +1,50 @@
+$ /opt/pyvenv/bin/python3 scripts/ccm_preflight --config experiments/configs/smoke_v0.1.0.json
+START_UTC=2026-10-22T13:29:03.246340+00:00
+END_UTC=2026-10-22T13:29:04.088691+00:00
+{
+  "checks": [
+    {
+      "detail": "run_kind=smoke",
+      "id": "run_kind_recognized",
+      "status": "pass"
+    },
+    {
+      "detail": "sha256=e583099d7b2bdd8b0d56eda83e620c24a063eeeeaee1c5cc4f1ebb1d035d60b6",
+      "id": "protocol_integrity",
+      "status": "pass"
+    },
+    {
+      "detail": "ModelVisibleCase contains no evaluator answer fields",
+      "id": "visible_schema_allowlist",
+      "status": "pass"
+    },
+    {
+      "detail": "empirical boundary sources contain no evaluator import or gold reads",
+      "id": "gold_access_allowlist",
+      "status": "pass"
+    },
+    {
+      "detail": "two schema objects remain independently serialized; forbidden field rejected",
+      "id": "fixture_metamorphic_boundary",
+      "status": "pass"
+    },
+    {
+      "detail": "explicit, inspectable baseline implementation status",
+      "id": "baseline_registry_present",
+      "status": "pass"
+    },
+    {
+      "detail": "legacy symbolic execution may be labeled software_validation only",
+      "id": "symbolic_smoke_only",
+      "status": "pass"
+    }
+  ],
+  "eligible_for_empirical": false,
+  "ok": true,
+  "protocol_id": "CCM-EMP-002",
+  "result_classification": "software_validation_only",
+  "run_kind": "smoke"
+}
+
+EXIT_CODE=0
+EXPECTED_EXIT_CODE=0
