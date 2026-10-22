@@ -1,0 +1,10 @@
+$ bash scripts/run_smoke --output-dir /tmp/ccm-exact-head-ppqakdbb/src/out/raw
+START_UTC=2026-10-22T13:14:30.346582+00:00
+END_UTC=2026-10-22T13:14:31.181707+00:00
+{
+  "raw_results": "/tmp/ccm-exact-head-ppqakdbb/src/out/raw/ccm-smoke-v0.1.0.jsonl",
+  "manifest": "results/manifests/ccm-smoke-v0.1.0.json"
+}
+
+EXIT_CODE=0
+EXPECTED_EXIT_CODE=0

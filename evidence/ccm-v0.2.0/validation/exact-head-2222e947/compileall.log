@@ -1,0 +1,6 @@
+$ /opt/pyvenv/bin/python3 -m compileall -q ccm experiments evaluation tests
+START_UTC=2026-10-22T13:14:28.212351+00:00
+END_UTC=2026-10-22T13:14:29.273089+00:00
+
+EXIT_CODE=0
+EXPECTED_EXIT_CODE=0
