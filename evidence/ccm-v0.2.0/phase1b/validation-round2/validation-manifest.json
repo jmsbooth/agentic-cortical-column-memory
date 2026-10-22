@@ -1,0 +1,35 @@
+{
+  "both_exit_codes": 0,
+  "compile_command": "python -m compileall -q ccm/memory ccm/schemas ccm/empirical tests/unit",
+  "eligible_empirical_evidence": false,
+  "end_utc": "2026-10-22T00:16:16Z",
+  "engine_integration": "not locally run; needs full actual source checkout",
+  "execution": "local offline Python environment, with non-authoritative schema/Phase1A-case compatibility scaffolds",
+  "increment": "Phase 1B / targeted validation round 2",
+  "local_scaffolds": [
+    "ccm/schemas/models.py",
+    "ccm/empirical/contracts.py",
+    "ccm/empirical/operations.py"
+  ],
+  "logs_sha256": {
+    "compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "focused-tests.log": "0e83e19e65cb9e8ef1ffa259ad26ba78093ad60ec6b88259d4f42883d52e44aa"
+  },
+  "model_effectiveness_runs": 0,
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+  "predecessor_branch_head": "2ddc7ecaf5a9e5a7f3787578b9df6facb4ed583f",
+  "protocol_id": "CCM-EMP-002",
+  "python": "3.13.5",
+  "source_sha256": {
+    "ccm/memory/durable.py": "98e68a44d7d1749c1e993f65f82bde21841d8beadd17448b1d9df868918f7317",
+    "ccm/memory/store.py": "8f8a2646f5041bf6acd270d3e15c5a62bd2fc3eba7ee8b7a47b791b5f01bd71b",
+    "docs/durable-memory.md": "95732fb0a560ebb9a8c25e7ad1be0a61943b9df3701ce267bcf814c1a387dc82",
+    "tests/unit/test_durable_memory.py": "d9b4eb487fc50ee5b215ea3ceba8b36f8d1c3dfdbd0c2aba2d1e72d4f0950673",
+    "tests/unit/test_memory_engine_injection.py": "8feed21973a3614b25df91b659745b062012c0e2c9ebf7e7294e41f7698482ee",
+    "tests/unit/test_memory_temporal.py": "a6f52a9fc7924650337d08d2fca0684c2ffc7f9d24f15b80afdcb356b07e7932"
+  },
+  "start_utc": "2026-10-22T00:16:13Z",
+  "status": "TARGETED PASS; EXACT-HEAD FULL SUITE BLOCKED",
+  "test_command": "python -m unittest tests.unit.test_durable_memory tests.unit.test_memory_temporal -v",
+  "tests": 38
+}

@@ -3,6 +3,8 @@ from __future__ import annotations
 
 import os
 import sqlite3
+import subprocess
+import sys
 import tempfile
 import unittest
 from dataclasses import replace
@@ -198,6 +200,45 @@ class DurableMemoryTests(unittest.TestCase):
             self.assertNotIn("gold_answer",str(obj.to_dict()))
             self.assertEqual(obj.source,f"{case_id}:src:1")
 
+    def test_child_process_crash_rolls_back_uncommitted_observation(self):
+        with self.open() as store:
+            store.write(observation("stable"))
+        program = """
+import os,sys
+from ccm.memory.durable import SQLiteMemoryStore
+from ccm.schemas.models import Observation
+s=SQLiteMemoryStore(sys.argv[1],agent_id='agent-A',column_id='column-1')
+s._conn.execute('BEGIN IMMEDIATE')
+s._insert(Observation('uncommitted','lost event','frame:entity','resource','source:external',4,1.0,'event:source'))
+os._exit(17)
+"""
+        run=subprocess.run([sys.executable,"-c",program,str(self.path)],
+            cwd=Path(__file__).resolve().parents[2],capture_output=True,text=True,timeout=10)
+        self.assertEqual(run.returncode,17,(run.stdout,run.stderr))
+        with self.open() as store:
+            self.assertEqual([o.object_id for o in store.all()],["stable"])
+            self.assertEqual(store.supersession_map(),{})
+
+    def test_child_process_commit_survives_new_process(self):
+        program = """
+import sys
+from ccm.memory.durable import SQLiteMemoryStore
+from ccm.schemas.models import Observation
+with SQLiteMemoryStore(sys.argv[1],agent_id='agent-A',column_id='column-1') as store:
+    store.write(Observation('child','committed','frame:entity','resource','source:external',3,1.0,'event:source'))
+"""
+        run=subprocess.run([sys.executable,"-c",program,str(self.path)],
+            cwd=Path(__file__).resolve().parents[2],capture_output=True,text=True,timeout=10)
+        self.assertEqual(run.returncode,0,(run.stdout,run.stderr))
+        with self.open() as store:
+            self.assertEqual([o.object_id for o in store.all()],["child"])
+
+    def test_timezone_offset_is_compared_as_instant_not_string(self):
+        with self.open() as store:
+            store.write(observation("offset",start="2026-01-01T00:00:00-05:00"))
+            self.assertEqual(store.historical("frame:entity",at_time="2026-01-01T04:59:59Z"),())
+            self.assertEqual([o.object_id for o in store.historical("frame:entity",at_time="2026-01-01T05:00:00Z")],["offset"])
+
     def test_bitemporal_as_known_before_late_ingest_excludes_future_knowledge(self):
         with self.open() as store:
             earlier = replace(observation("old",start=T0),recorded_at=T0)
@@ -259,6 +300,31 @@ class DurableMemoryTests(unittest.TestCase):
                 store.write_many((obs_a,obs_b,replace(obs_a,sequence=3)))
         with self.open() as store:
             self.assertEqual(store.all(),())
+
+    def test_model_visible_source_id_tampering_is_rejected_again_at_ingress(self):
+        case_id="case:1234567890abcdef"
+        obs=(VisibleObservation(f"{case_id}:obs:1","device event",f"{case_id}:src:1","frame:entity","resource",T0),)
+        case=ModelVisibleCase(case_id,"what happened?",obs,(),("A","B"),(f"{case_id}:src:1",),128)
+        object.__setattr__(case,"allowed_source_ids",(f"{case_id}:src:foreign",))
+        with self.open() as store:
+            with self.assertRaises(BoundaryViolation):store.write_visible_case(case)
+            self.assertEqual(store.all(),())
+
+    def test_mutating_evaluator_gold_cannot_change_persisted_visible_case(self):
+        case_id="case:1234567890abcdef"
+        obs=(VisibleObservation(f"{case_id}:obs:1","device event",f"{case_id}:src:1","frame:entity","resource",T0),)
+        case=ModelVisibleCase(case_id,"what happened?",obs,(),("A","B"),(f"{case_id}:src:1",),128)
+        class HiddenEvaluator:
+            gold_answer="A"
+        oracle=HiddenEvaluator()
+        with self.open() as store:
+            store.write_visible_case(case)
+            before=store.snapshot_digest()
+        oracle.gold_answer="B"
+        with tempfile.TemporaryDirectory() as other:
+            with SQLiteMemoryStore(Path(other)/"other.db",agent_id="agent-A",column_id="column-1") as store:
+                store.write_visible_case(case)
+                self.assertEqual(store.snapshot_digest(),before)
 
     def test_storage_measurement_is_nonzero_after_writes(self):
         with self.open() as store:
