@@ -1,0 +1,31 @@
+{
+  "compile": "python -m compileall -q ccm/memory ccm/schemas ccm/empirical tests/unit",
+  "empirical_performance_runs": 0,
+  "engine_integration_local": "NOT RUN",
+  "exit_codes": [
+    0,
+    0
+  ],
+  "increment": "Phase 1B temporal unknown handling",
+  "local_runtime": "disclosed compatibility scaffolds for Observation and Phase1A contracts",
+  "logs_sha256": {
+    "compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "focused-tests.log": "4c47e46c853035d24d87f5852f6c8828225ff78ab602c7ac823e832714c14ee3"
+  },
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+  "protocol": "CCM-EMP-002",
+  "python": "3.13.5",
+  "source_base": "Phase1A PR4 head 2ddc7ecaf5a9e5a7f3787578b9df6facb4ed583f",
+  "source_sha256": {
+    "ccm/memory/durable.py": "bfd012eb378e1b743e8275d9aef30e0f213e9efdbe54cc51c7c5e81569b03b27",
+    "ccm/memory/store.py": "c531eebd545bb0f4a03160e98fd3b9dcc32d0ae38fb07a597e994775bdfeec9a",
+    "docs/durable-memory.md": "ba5b3f8cb79641e1533e2297b7263ea03bab2a9c795ecb6dedb93d5e811f8d51",
+    "tests/unit/test_durable_memory.py": "102263d952374ddfc58b55fe7641f0541f8381096a99addb769caedf0f90300c",
+    "tests/unit/test_memory_temporal.py": "af413b509bb1e9320041bb4fb2ab6c872df396dc9982087b2ac4a1bcb64d40fd"
+  },
+  "status": "TARGETED PASS, FULL REPOSITORY LOCAL TEST NOT RUN",
+  "test_command": "python -m unittest tests.unit.test_durable_memory tests.unit.test_memory_temporal -v",
+  "tests_passed": 42,
+  "utc_end": "2026-10-22T00:19:58Z",
+  "utc_start": "2026-10-22T00:19:55Z"
+}
